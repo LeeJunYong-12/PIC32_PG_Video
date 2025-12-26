@@ -914,6 +914,15 @@ enum SDC_STATE{
     SDC_UNMOUNT,
 };
 
+enum F_SDC_STATE{
+    F_SDC_WAIT = 0,
+    F_SDC_NO,
+    F_SDC_INIT,
+    F_SDC_MOUNT,
+    F_SDC_UNMOUNT,
+};
+
+
 /*enum SignalTypeFPGA{
     bRGB_FPGA = 0,     // 0   
     bLVDS_D_FPGA,    

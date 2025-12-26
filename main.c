@@ -60,7 +60,6 @@ int main ( void )
         FPGA_Service(); 
         SDC_FS_Task();  
         //printf("VIDEO BD Address= %s , Mac= %s\r\n",  ipNetConf.ipAddr,ipNetConf.macAddr);
-      
     }
 
     /* Execution should not come here during normal operation */
@@ -165,7 +164,8 @@ void Port_Init(void)
 	//PGID_SW2_READ;
 	//PGID_SW3_READ;
 	SD_SEL_OUTPORT;
-	SD_SEL_HIGH;
+	//SD_SEL_HIGH;
+	SD_SEL_LOW;
 
 	SD_SPI_CLK_OUTPORT;
 	SD_SPI_MOSI_OUTPORT;

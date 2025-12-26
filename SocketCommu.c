@@ -491,61 +491,64 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			}
 			else if(pPacket->Para3 == 6)
 			{
+			//image.circle6 [r0] [g0] [b0] [r1] [g1] [b1] [r2] [g2] [b2] [r3] [g3] [b3] [r4] [g4] [b4] [x0] [y0] [rx0] [ry0] [w00] [w01] [h/v] [w10] [w11] [y1] [h/v]
+			//Display_UDIR_Circle6_Pattern(color:0,0,0,746,746,746,0,0,0,746,746,746,0,0,0, area:330,480,330,330, width:1,1,1,1, hv:0,0, y1:1611)
+			
 				printf("image.circle6_rgb0~4 : ");
 				int k;
 				
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+33)); // r0g0b0
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
 				}
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+36)); // r1g1b1
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 1022); 
 				}
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+39)); // r2g2b2
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 736); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+42)); // r3g3b3
 					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
 				}
 				for(k=0; k<3; k++)
 				{
+					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+42)); // r3g3b3
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 746); 
+				}
+				for(k=0; k<3; k++)
+				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+45)); // r4g4b4
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 376); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
 				}
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 48); // x0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 300); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 330); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 49); // y0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 400); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 480); 
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 50); // rx0 // ry0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 250); // pPacket->CIRCLE_XY[2] , pPacket->CIRCLE_XY[3]
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 330); // pPacket->CIRCLE_XY[2] , pPacket->CIRCLE_XY[3]
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 51); // w00
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 10); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 3); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 52); // w01
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 20); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 53); // H/V
 				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); // v
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 54); // w10
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 10); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 3); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 55); // w11
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 20); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 56); // Y1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 2500); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1611); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 57); // HV
 				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); // v
@@ -768,6 +771,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			F_GPIO3_LOW;
 			delay_m(1000);
 		#endif
+			SD_SEL_HIGH;
 			Mipi_Macro_Init();
 			delay_m(200); //100
 			GlobalSetting1.FPGA_STATUS = FPGA_STATE_INIT;
@@ -1312,12 +1316,14 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 	    {  
 
 			//pnc code :  image.circle6 0 0 0 1022 1022 1022 0 0 0 373 373 373 0 0 0 330 480 330 330 3 1 v 1 1 1574 v
+   //Display_UDIR_Circle6_Pattern(color:0,0,0,746,746,746,0,0,0,746,746,746,0,0,0, area:330,480,330,330, width:1,1,1,1, hv:0,0, y1:1611)
+			
 	        printf("image.circle6_rgb0~4 : ");
 			for(k=32; k<47; k++) // 0x20 ~ 0x2F
 			{
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+1)); 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k]); 
-				printf("%d, ",pPacket->CIRCLE_COLOR[k]); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k-32]); 
+				printf("%d, ",pPacket->CIRCLE_COLOR[k-32]); 
 			}
 			printf("\r\n");
 			
@@ -1386,7 +1392,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 
 void VersionSend(void)
 {
-    unsigned char appVersioin[4] = {25, 6, 25, 0}; // flash erase & write verify change
+    unsigned char appVersioin[4] = {25, 9, 11, 0}; // flash erase & write verify change
     
 	uint8_t szVersion[20] = {"Video Board"};
 	uint8_t szBuff[sizeof(VER_PACKET)];

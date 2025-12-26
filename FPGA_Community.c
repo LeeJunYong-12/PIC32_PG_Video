@@ -2176,7 +2176,7 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
 	
 	PMP_WRITE_ONE(FPGA_FILE_READ_EN, 1);
 
-	for(i=0; i<800; i++)
+	for(i=0; i<500; i++)
 	{
 	    delay_m(10);
 		if(FPGA_FILE_END_READ())
@@ -2313,7 +2313,7 @@ void FPGA_ImgViewForBMP(unsigned int mSEL)
 
 #if 1 // 220714
 	printf("************** bmp_view value **************\n\r");
-	printf("bmp num %d\n\r", OrderNum);
+	printf("bmp num %d\n\r", OrderNum + 1);
 	printf("STARADDR_H 0x%x\n\r",(unsigned short)(TSTART_ADDR>>16));
 	printf("STARADDR_L 0x%x\n\r",(unsigned short)TSTART_ADDR);
 	printf("ENDADDR_H 0x%x\n\r",(unsigned short)(TEND_ADDR>>16));
@@ -8745,43 +8745,43 @@ void SD_SaveBMP_DEL(char bmp_num)
     if(bmp_num == 0){
         for(i=0; i< MAX_DOWN_BMP_SIZE; i++)
         {
-            sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
+        	if(1) //GlobalSetting1.gm_MODEL_TYPE == 99)
+			{
+				sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 
+			}
+			else if(GlobalSetting1.gm_MODEL_TYPE == 25){
+				sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
+			}
+			else{
+            	sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
             //appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ );
+        	}
             SYS_FS_FileDirectoryRemove(tx_string);
             //SYS_FS_FileClose(appData.fileHandle);
+            printf("File DEL : %s \n\r", tx_string);
         }
         AckPackSend(1); 
     }
     else
     {
-        sprintf(tx_string,"/mnt/myDrive/%d.bmp",bmp_num);   
+		if(1) //GlobalSetting1.gm_MODEL_TYPE == 99)
+	    {
+			sprintf(tx_string,"/mnt/myDrive/%d.txt",bmp_num); 
+		}
+		else if(GlobalSetting1.gm_MODEL_TYPE == 25){
+			sprintf(tx_string,"/mnt/myDrive/%d.lz4",bmp_num); 
+		}
+		else{
+       		sprintf(tx_string,"/mnt/myDrive/%d.bmp",bmp_num);   
+		}
         //appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
         SYS_FS_FileDirectoryRemove(tx_string);
         //SYS_FS_FileClose(appData.fileHandle);
+        printf("File DEL : %s \n\r", tx_string);
         AckPackSend(1);
     }
 }
 
-/*void SD_SaveBMP_LIST(char *nlist)
-{
-    short i;
-	char tx_string[25] = {0, };
-    char List[50] = {0, };
-    
-    memset(nlist, 0 , sizeof(List));
-
-    for(i=1; i< 51; i++)
-    {
-        sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
-        appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
-
-        if(appData.fileHandle == SYS_FS_HANDLE_INVALID)  List[i-1] = 0;
-        else List[i-1] = 1;
-
-        SYS_FS_FileClose(appData.fileHandle);
-    }
-    memcpy(nlist , List, sizeof(List));
-}*/
 
 void SD_SaveBMP_LIST(char *nlist)
 {
@@ -8793,17 +8793,24 @@ void SD_SaveBMP_LIST(char *nlist)
 	//printf("MCU_SD_STATUS1 : %d \n\r", GlobalSetting1.MCU_SD_STATUS);
 
 	SD_SEL_LOW; // MCU <----> SD CARD
-	SDC_MCU_Task();
-    memset(nlist, 0 , sizeof(List));
+	delay_m(2);
+	//SDC_MCU_Task();
+    memset(nlist, 0 , MAX_DOWN_BMP_SIZE);
 
     for(i=1; i< MAX_DOWN_BMP_SIZE; i++)
     {
-    	if(GlobalSetting1.gm_MODEL_TYPE == 99){
-			sprintf(tx_string,"/mnt/myDrive/%d.lz4",i);  
-	    }
-		else{
-		    sprintf(tx_string,"/mnt/myDrive/%d.bmp",i); 
+		if(1) //GlobalSetting1.gm_MODEL_TYPE == 99)
+		{
+			sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 
 		}
+		else if(GlobalSetting1.gm_MODEL_TYPE == 25){
+			sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
+		}
+		else{
+			sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
+		//appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ );
+		}
+
         appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
 
         fileSize = SYS_FS_FileSize(appData.fileHandle);
@@ -8813,18 +8820,58 @@ void SD_SaveBMP_LIST(char *nlist)
 
         SYS_FS_FileClose(appData.fileHandle);
 
-    	if(GlobalSetting1.gm_MODEL_TYPE == 99){
+    	/*if(GlobalSetting1.gm_MODEL_TYPE == 99){
 	        if(List[i-1] == 1)	LZ4_BMPSave(i);
-    	}
+    	}*/
 
     }
-    memcpy(nlist , List, sizeof(List));   
+
+    memcpy(nlist , List, MAX_DOWN_BMP_SIZE);   
 	
 	printf("MCU_SD_STATUS2 : %d \n\r", GlobalSetting1.MCU_SD_STATUS);
 
-    
 }
 
+#if 0
+unsigned char SD_TEXT_LIST(void)
+{
+    short i,j=0;
+    long fileSize;
+	char tx_string[25] = {0, };
+	unsigned char flag = 0;
+
+	GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
+
+	SD_SEL_LOW; // MCU <----> SD CARD
+	delay_m(2);
+	SDC_MCU_Task();
+
+    for(i=1; i< MAX_DOWN_BMP_SIZE; i++)
+    {
+		sprintf(tx_string,"/mnt/myDrive/%d.txt",i);  
+
+        appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
+
+        fileSize = SYS_FS_FileSize(appData.fileHandle);
+        //printf("fileSize : %d \n\r",fileSize); 	
+        if(appData.fileHandle == SYS_FS_HANDLE_INVALID || fileSize < 100)
+		{
+			;;;;
+       	}
+        else
+		{
+			flag = 1;
+        }
+
+        SYS_FS_FileClose(appData.fileHandle);
+
+    }
+	
+	printf("flag : %d \n\r", flag);
+	return flag;
+
+}
+#endif
 
 int FPGA_Save_SD(unsigned char* pData, int offset, int size, char type)
 {
@@ -12390,14 +12437,15 @@ void SavePATAndBMP(void)
 	printf("SDCARD_STATUS : %d \n\r", GlobalSetting1.SDCARD_STATUS);
 		
     if(GlobalSetting1.SDCARD_STATUS != SDC_NO)
-    {   
+    {  
+		//printf("SDCARD_STATUS : %d \n\r", GlobalSetting1.SDCARD_STATUS);
         for(i = 0; i < ModeInfo.gm_BMP_NUM; i++)
         {
-            printf("Direct BMP Save Start %d \n\r", i);  
+            printf("Direct BMP Save Start %d \n\r", i+1);  
 			//LZ4_BMPSave(ModeInfo.gm_BMP_ROOM[i]);
 			
             FPGA_BMPSave(ModeInfo.gm_BMP_ROOM[i],i);    
-            printf("Direct BMP Save END %d \n\r", i);
+            printf("Direct BMP Save END %d \n\r", i+1);
 			if(GlobalSetting1.gm_RGB_H_SIZE > 700)	delay_m(50);//100
         }
     }
