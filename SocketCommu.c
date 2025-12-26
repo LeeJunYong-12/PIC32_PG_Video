@@ -377,16 +377,16 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 				
 				PMP_WRITE_ONE(Wr_DUAL_BOX_X, 500); //[box2_X1]// X2
 				PMP_WRITE_ONE(Wr_DUAL_BOX_Y, 500); //[box2_Y1]// Y2
-				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, 510); //[box_R] //BOX Color
-				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, 510); //[box_G]
-				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, 510); //[box_B]
+				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, 512); //[box_R] //BOX Color
+				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, 0); //[box_G]
+				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, 0); //[box_B]
 				PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 2); //X2,Y2,Box_Color2
 				
 				PMP_WRITE_ONE(Wr_DUAL_BOX_X, 800); //[box2_X2]// X3
 				PMP_WRITE_ONE(Wr_DUAL_BOX_Y, 800); //[box2_Y2]// Y3
 				PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 3); //X3,Y3,Box_Color2
 				
-				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, 512); //[bg_R]// BackGround Color 
+				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, 0); //[bg_R]// BackGround Color 
 				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, 0); //[bg_G]
 				PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, 0); //[bg_B]		
 				PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 4); //Back Ground Color 
@@ -410,18 +410,18 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 				printf("image.circle3_rgb0~5 : ");
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 1); // r0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 2); // g0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 3); // b0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 4); // r1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 750); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 5); // g1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 750); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 6); // b1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 750); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 	
 				for(k=0; k<3; k++)
 				{
@@ -477,15 +477,13 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 29); // y4
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1127); 
-
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 2868); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 30); // w
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->Para2); 
-				
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 31); // hv
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);  // v
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // v
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);  
 				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);    //Circle enable
@@ -493,234 +491,61 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			}
 			else if(pPacket->Para3 == 6)
 			{
-			    int k;
-				printf("image.circle3_rgb0~5 : ");
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 1); // r0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 2); // g0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 3); // b0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 4); // r1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 5); // g1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 6); // b1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-	
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+7)); // r2g2b2
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+10)); // r3g3b3
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 746); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+13)); // r4g4b4
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 746); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+16)); // r5g5b5
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 746); 
-				}
-				
-		        printf("image.circle3_xy0~3 : ");
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 19); // x0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 20); // y0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 21); // rx0 // ry0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); // pPacket->CIRCLE_XY[2] , pPacket->CIRCLE_XY[3]
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 22); // x1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 207); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 23); // y1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 96); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 24); // rx1 // ry1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 100); // pPacket->CIRCLE_XY[6] , pPacket->CIRCLE_XY[7]
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 25); // x2
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 26); // y2
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 27); // x3 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 28); // y3 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 29); // y4
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 2868); 
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 30); // w
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 31); // hv
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // v
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);  
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);    //Circle enable
-			
-			}
-			else if(pPacket->Para3 == 7)
-			{
-			    int k;
-				printf("image.circle3_rgb0~5 : ");
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 1); // r0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 2); // g0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 3); // b0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 4); // r1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 5); // g1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 6); // b1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-	
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+7)); // r2g2b2
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 1022); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+10)); // r3g3b3
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 746); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+13)); // r4g4b4
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				}
-				for(k=0; k<3; k++)
-				{
-					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+16)); // r5g5b5
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				}
-				
-		        printf("image.circle3_xy0~3 : ");
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 19); // x0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 20); // y0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 21); // rx0 // ry0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); // pPacket->CIRCLE_XY[2] , pPacket->CIRCLE_XY[3]
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 22); // x1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 207); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 23); // y1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 96); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 24); // rx1 // ry1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 34); // pPacket->CIRCLE_XY[6] , pPacket->CIRCLE_XY[7]
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 25); // x2
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 174); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 26); // y2
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 133); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 27); // x3 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 240); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 28); // y3 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 2868); 
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 29); // y4
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 2868); 
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 30); // w
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
-
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 31); // hv
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // v
-				
-				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);  
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);    //Circle enable
-			
-			}
-			else if(pPacket->Para3 == 8)
-			{
-			//image.circle6 [r0] [g0] [b0] [r1] [g1] [b1] [r2] [g2] [b2] [r3] [g3] [b3] [r4] [g4] [b4] [x0] [y0] [rx0] [ry0] [w00] [w01] [h/v] [w10] [w11] [y1] [h/v]
-			//Display_UDIR_Circle6_Pattern(color:0,0,0,746,746,746,0,0,0,746,746,746,0,0,0, area:330,480,330,330, width:1,1,1,1, hv:0,0, y1:1611)
-			
 				printf("image.circle6_rgb0~4 : ");
 				int k;
 				
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+33)); // r0g0b0
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 1014); 
 				}
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+36)); // r1g1b1
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 1022); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
 				}
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+39)); // r2g2b2
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 736); 
 				}
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+42)); // r3g3b3
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 746); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
 				}
 				for(k=0; k<3; k++)
 				{
 					PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+45)); // r4g4b4
-					PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); 
+					PMP_WRITE_ONE(Wr_CIRCLE_EN, 376); 
 				}
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 48); // x0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 330); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 300); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 49); // y0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 480); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 400); 
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 50); // rx0 // ry0
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 330); // pPacket->CIRCLE_XY[2] , pPacket->CIRCLE_XY[3]
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 250); // pPacket->CIRCLE_XY[2] , pPacket->CIRCLE_XY[3]
 				
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 51); // w00
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 3); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 10); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 52); // w01
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 20); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 53); // H/V
 				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); // v
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 54); // w10
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 3); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 10); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 55); // w11
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 20); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 56); // Y1
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, 1611); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 2500); 
 
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 57); // HV
 				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0); // v
@@ -909,32 +734,32 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 				}
 			}
 			AckPackSend(1);		
-        }
-        else if (!strcmp( pPacket->FunName , "f_VARIABLE_PAT" ))
-        {
-			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);	
-			PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle3 disable
+        	}
+	        else if (!strcmp( pPacket->FunName , "f_VARIABLE_PAT" ))
+	        {
+				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);	
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle3 disable
+				
+				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0x20);  
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle6 disable
 			
-			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0x20);  
-			PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle6 disable
-		
-			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box Num	
-			PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 0);	 //Box disable 
+				PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box Num	
+				PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 0);	 //Box disable 
+				
+	            GlobalSetting1.gmVARGRed	=	pPacket->Para2;
+	            GlobalSetting1.gmVARGGreen	=	pPacket->Para3;
+	            GlobalSetting1.gmVARGBlue	=	pPacket->Para4;
+
+				printf("f_VARIABLE_PAT : R(%d), G(%d), B(%d)\r\n",GlobalSetting1.gmVARGRed, GlobalSetting1.gmVARGGreen, GlobalSetting1.gmVARGBlue);
+
+	            FPGA_Wr_PATTERN_TYPE_SEL_REG(0);
+	            //PMP_WRITE_ONE(Wr_PHYSICAL_PATTERN_NUM_REG, 684);
+				FPGA_Wr_PHYSICAL_PATTERN_NUM(684);
+	            New_GRAY_LEVEL_Control(GlobalSetting1.gmVARGRed,GlobalSetting1.gmVARGGreen,GlobalSetting1.gmVARGBlue);
+	            PMP_WRITE_ONE(Wr_DISPLAY_START, 1);
 			
-            GlobalSetting1.gmVARGRed	=	pPacket->Para2;
-            GlobalSetting1.gmVARGGreen	=	pPacket->Para3;
-            GlobalSetting1.gmVARGBlue	=	pPacket->Para4;
-
-			printf("f_VARIABLE_PAT : R(%d), G(%d), B(%d)\r\n",GlobalSetting1.gmVARGRed, GlobalSetting1.gmVARGGreen, GlobalSetting1.gmVARGBlue);
-
-            FPGA_Wr_PATTERN_TYPE_SEL_REG(0);
-            //PMP_WRITE_ONE(Wr_PHYSICAL_PATTERN_NUM_REG, 684);
-			FPGA_Wr_PHYSICAL_PATTERN_NUM(684);
-            New_GRAY_LEVEL_Control(GlobalSetting1.gmVARGRed,GlobalSetting1.gmVARGGreen,GlobalSetting1.gmVARGBlue);
-            PMP_WRITE_ONE(Wr_DISPLAY_START, 1);
-		
-            AckPackSend(1);
-        }
+	            AckPackSend(1);
+	        }
 		else if (!strcmp( pPacket->FunName , "END_MACRO" ))	
 		{
 		#if 0
@@ -943,7 +768,6 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			F_GPIO3_LOW;
 			delay_m(1000);
 		#endif
-			SD_SEL_HIGH;
 			Mipi_Macro_Init();
 			delay_m(200); //100
 			GlobalSetting1.FPGA_STATUS = FPGA_STATE_INIT;
@@ -1461,8 +1285,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_W); 
 
 			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 31); // hv
-			PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);  // D970
-			//PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // height or vertical // @ 1 => width or horizontal
+			PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // height or vertical // @ 1 => width or horizontal
 
 			printf("image.circle3 : (CIRCLE_Y4)%d, (CIRCLE_W)%d\r\n",pPacket->CIRCLE_Y4, pPacket->CIRCLE_W);
 			
@@ -1489,14 +1312,12 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 	    {  
 
 			//pnc code :  image.circle6 0 0 0 1022 1022 1022 0 0 0 373 373 373 0 0 0 330 480 330 330 3 1 v 1 1 1574 v
-   //Display_UDIR_Circle6_Pattern(color:0,0,0,746,746,746,0,0,0,746,746,746,0,0,0, area:330,480,330,330, width:1,1,1,1, hv:0,0, y1:1611)
-			
 	        printf("image.circle6_rgb0~4 : ");
 			for(k=32; k<47; k++) // 0x20 ~ 0x2F
 			{
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+1)); 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k-32]); 
-				printf("%d, ",pPacket->CIRCLE_COLOR[k-32]); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k]); 
+				printf("%d, ",pPacket->CIRCLE_COLOR[k]); 
 			}
 			printf("\r\n");
 			
@@ -1565,7 +1386,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 
 void VersionSend(void)
 {
-    unsigned char appVersioin[4] = {25, 11, 4, 0}; // flash erase & write verify change
+    unsigned char appVersioin[4] = {25, 6, 25, 0}; // flash erase & write verify change
     
 	uint8_t szVersion[20] = {"Video Board"};
 	uint8_t szBuff[sizeof(VER_PACKET)];
