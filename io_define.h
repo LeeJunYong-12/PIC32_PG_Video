@@ -362,18 +362,6 @@
 "000101" ¡æ Box enable
 #else// by dsoh 2021.01.11 fpga touch drawing ...
 
-#define 	Wr_DUAL_BOX_EN				0x0032
-#define 	Wr_DUAL_BOX_COLOR_R		    0x0024 
-#define 	Wr_DUAL_BOX_COLOR_G			0x0026
-#define 	Wr_DUAL_BOX_COLOR_B			0x0028
-#define 	Wr_DUAL_BOX_INDEX			0x002A
-#define 	Wr_DUAL_BOX_X				0x002C
-#define 	Wr_DUAL_BOX_Y				0x002E
-
-
-#define 	Wr_CIRCLE_EN			0x00EC
-#define 	Wr_CIRCLE_INDEX			0x00EA
-
 #endif
 
 
@@ -525,6 +513,17 @@
 
 #define 	Wr_DATA_10BIT				0x0044
 
+#define 	Wr_DUAL_BOX_EN				0x0032
+#define 	Wr_DUAL_BOX_COLOR_R		    0x0024 
+#define 	Wr_DUAL_BOX_COLOR_G			0x0026
+#define 	Wr_DUAL_BOX_COLOR_B			0x0028
+#define 	Wr_DUAL_BOX_INDEX			0x002A
+#define 	Wr_DUAL_BOX_X				0x002C
+#define 	Wr_DUAL_BOX_Y				0x002E
+
+
+#define 	Wr_CIRCLE_EN			0x00EC
+#define 	Wr_CIRCLE_INDEX			0x00EA
 
 
 typedef struct
@@ -685,7 +684,9 @@ typedef struct
     unsigned short   gm_DelBMP_NUM;
     unsigned char    gm_FPGA_Status;
 	unsigned char    LED_Status;
-    
+	
+	unsigned char    gm_LZ4_Comp_flag;
+	unsigned char    gm_Image_Type; 
 } GlobalVariableSettingType1;
 
 typedef struct
@@ -920,6 +921,12 @@ enum F_SDC_STATE{
     F_SDC_INIT,
     F_SDC_MOUNT,
     F_SDC_UNMOUNT,
+};
+
+enum D_IMAGE_STATE{
+    D_BMP_TYPE = 0,
+    D_TXT_TYPE,
+    D_LZ4_TYPE,
 };
 
 

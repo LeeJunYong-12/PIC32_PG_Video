@@ -68,6 +68,8 @@ void SDC_FS_DOWN_INIT(void);
 
 
 short SDTime_out;
+short F_SDTime_out;
+
 /* *****************************************************************************
  End of File
  */

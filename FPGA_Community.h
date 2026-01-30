@@ -174,6 +174,7 @@ void SavePATAndBMP(void);
 int FPGA_Save_SD(unsigned char* pData, int offset, int size, char type);
 
 void SD_SaveBMP_LIST(char *nlist);
+extern bool SD_DeleteFileAndCheck(const char* path);
 void SD_SaveBMP_DEL(char bmp_num);
 
 void FPGA_Direct_AccessPtn(unsigned int pATTERN);
@@ -193,6 +194,7 @@ void FPGA_Pat_Dummy(void);
 //void decompressLZ4_SD(const char *filename);
 void decompressLZ4_SD(const char *inputFile, const char *outputFile);
 char LZ4_BMPSave(unsigned int BMPsel);
+
 
 /* *****************************************************************************
  End of File

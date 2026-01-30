@@ -493,8 +493,10 @@ unsigned char SD_Read_CSD(void)
     return PASS;   
 }
 
+#if 0
 void SDC_MCU_Task(void) 
 {
+    short i;
 	switch (GlobalSetting1.MCU_SD_STATUS)
 	{
 		case SDC_INIT:
@@ -503,61 +505,41 @@ void SDC_MCU_Task(void)
 			result = SD_init();          
 			if(result == PASS) 
 			{
-				GlobalSetting1.MCU_SD_STATUS = SDC_MOUNT;
 				appData.fileHandle = SYS_FS_Unmount("/mnt/myDrive");
 				delay_m(500);
+                while(0 < SDTime_out)
+                {
+					appData.fileHandle = SYS_FS_Mount("/dev/mmcblka1","/mnt/myDrive", FAT, 0, NULL);
+					delay_m(10);
+					
+					if (appData.fileHandle == SYS_FS_HANDLE_INVALID)
+					{
+						SDTime_out--;        
+						//GlobalSetting1.MCU_SD_STATUS = SDC_UNMOUNT;
+						printf("1111 : SDTime_out : %d\n\r",SDTime_out);
+						if(SDTime_out == 1)
+						{
+							GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
+							SDTime_out = 1000;
+							break;
+						}
+					}
+					else
+					{
+					    SDTime_out = 1000;
+						GlobalSetting1.MCU_SD_STATUS = SDC_WAIT;   
+						printf("2222\n\r");
+						break;
+					} 
+				}
+				break;
 			}
 			else 
 			{
 				GlobalSetting1.MCU_SD_STATUS = SDC_NO; 
+				printf("3333\n\r");
+				break;
 			}
-			break;
-		}
-		case SDC_MOUNT:
-		{
-			appData.fileHandle = SYS_FS_Mount("/dev/mmcblka1","/mnt/myDrive", FAT, 0, NULL);
-			if (appData.fileHandle == SYS_FS_HANDLE_INVALID)
-			{
-				if(0 < SDTime_out)
-				{
-					SDTime_out--;        
-					GlobalSetting1.MCU_SD_STATUS = SDC_MOUNT;                   
-				}
-				else 
-				{
-					GlobalSetting1.MCU_SD_STATUS = SDC_UNMOUNT;
-					SDTime_out = 1000;
-				}
-			}
-			else
-			{
-				GlobalSetting1.MCU_SD_STATUS = SDC_WAIT;            
-			}                
-			break;
-		}
-		case SDC_UNMOUNT:
-		{           
-			appData.fileHandle = SYS_FS_Unmount("/mnt/myDrive");
-
-			if (appData.fileHandle == SYS_FS_HANDLE_INVALID)
-			{            
-				if(0 < SDTime_out)
-				{
-					SDTime_out--;            
-					GlobalSetting1.MCU_SD_STATUS = SDC_UNMOUNT;                   
-				}
-				else 
-				{            
-					GlobalSetting1.MCU_SD_STATUS = SDC_NO;
-					SDTime_out = 1000;                    
-				}  
-			}
-			else 
-			{
-				GlobalSetting1.MCU_SD_STATUS = SDC_MOUNT;
-				SDTime_out = 1000;
-			}
-			break;                            
 		}
 		case SDC_WAIT:
 		{
@@ -571,166 +553,165 @@ void SDC_MCU_Task(void)
 }
 
 
-
-#if 0
-void SDC_FS_Task(void) 
-{
-	switch (GlobalSetting1.SDCARD_STATUS)
-	{
-		case SDC_INIT:
-		{
-			char result = 0;
-			result = SD_init();          
-			if(result == PASS) 
-			{
-				GlobalSetting1.SDCARD_STATUS = SDC_MOUNT;
-				appData.fileHandle = SYS_FS_Unmount("/mnt/myDrive");
-				delay_m(500);
-			}
-			else 
-			{
-				GlobalSetting1.SDCARD_STATUS = SDC_NO; 
-				GlobalSetting1.VIDEO_STATUS = VIDEO_BMPPTN_LOAD;
-			}
-			break;
-		}
-		case SDC_MOUNT:
-		{
-			appData.fileHandle = SYS_FS_Mount("/dev/mmcblka1","/mnt/myDrive", FAT, 0, NULL);
-			if (appData.fileHandle == SYS_FS_HANDLE_INVALID)
-			{
-				if(0 < SDTime_out)
-				{
-					SDTime_out--;
-					GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT; 
-					GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                
-					GlobalSetting1.SDCARD_STATUS = SDC_MOUNT;                   
-				}
-				else 
-				{
-					//printf("\n\r SDC Mount Time Out\n\r"); 
-					GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;
-					GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;     
-					GlobalSetting1.SDCARD_STATUS = SDC_UNMOUNT;
-					SDTime_out = 10000;
-				}
-			}
-			else
-			{
-				//delay_m(500);
-				//printf("\n\r SDC Mount OK\n\r");
-				GlobalSetting1.SDCARD_STATUS = SDC_WAIT;
-				GlobalSetting1.VIDEO_STATUS = VIDEO_BMPPTN_LOAD;
-				GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                  
-			}                
-			break;
-		}
-		case SDC_UNMOUNT:
-		{           
-			appData.fileHandle = SYS_FS_Unmount("/mnt/myDrive");
-
-			if (appData.fileHandle == SYS_FS_HANDLE_INVALID)
-			{            
-				if(0 < SDTime_out)
-				{
-					SDTime_out--;
-					GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT; 
-					GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                
-					GlobalSetting1.SDCARD_STATUS = SDC_UNMOUNT;                   
-				}
-				else 
-				{
-					//printf("\n\r SDC UNMount Time Out\n\r");                    
-					GlobalSetting1.VIDEO_STATUS = VIDEO_BMPPTN_LOAD; 
-					GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                
-					GlobalSetting1.SDCARD_STATUS = SDC_NO;
-					SDTime_out = 10000;                    
-				}  
-			}
-			else 
-			{
-				//delay_m(500);
-				//printf("\n\r SDC UNMount OK\n\r");
-				GlobalSetting1.SDCARD_STATUS = SDC_MOUNT;
-				GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;
-				GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT; 
-				SDTime_out = 10000;
-			}
-			break;                            
-		}
-		case SDC_WAIT:
-		{
-			break;
-		} 
-		default:
-		{
-			break;
-		}         
-	}
-}
 #else
+/*
+	1111
+	SDC Mount Time Out1
+	SDC UNMount OK2
+	SDC Mount OK1
+*/
+
+#define SD_LOOP_DELAY_MS    100
+#define SD_MOUNT_TIMEOUT   1000
+
+void SDC_MCU_Task(void)
+{
+    GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
+    SDTime_out = SD_MOUNT_TIMEOUT;
+
+    while (1)
+    {
+        /* ★★ 핵심 ★★
+           Harmony FS 내부 상태머신 구동 */
+        SYS_Tasks();
+
+        switch (GlobalSetting1.MCU_SD_STATUS)
+        {
+            /* ================= INIT ================= */
+            case SDC_INIT:
+            {
+                if (SD_init() == PASS)
+                {
+                    SYS_FS_Unmount("/mnt/myDrive");
+                    delay_m(500);
+                    printf("SDC INIT PASS\n\r");
+
+                    SDTime_out = SD_MOUNT_TIMEOUT;
+                    GlobalSetting1.MCU_SD_STATUS = SDC_MOUNT;
+                }
+                else
+                {
+                    printf("SDC INIT FAIL\n\r");
+                    return;
+                }
+                break;
+            }
+
+            /* ================= MOUNT ================= */
+            case SDC_MOUNT:
+            {
+                appData.fileHandle = SYS_FS_Mount("/dev/mmcblka1", "/mnt/myDrive", FAT, 0, NULL);
+
+                if (appData.fileHandle != SYS_FS_HANDLE_INVALID)
+                {
+                    printf("\n\r SDC Mount OK1\n\r");
+                    GlobalSetting1.MCU_SD_STATUS = SDC_WAIT;
+                    return;     /* 성공 종료 */
+                }
+
+                if (SDTime_out > 0)
+                {
+                    SDTime_out--;
+                }
+                else
+                {
+                    printf("\n\r SDC Mount Time Out1\n\r");
+                    SDTime_out = SD_MOUNT_TIMEOUT;
+                    GlobalSetting1.MCU_SD_STATUS = SDC_UNMOUNT;
+                }
+                break;
+            }
+
+            /* ================= UNMOUNT ================= */
+            case SDC_UNMOUNT:
+            {
+                SYS_FS_Unmount("/mnt/myDrive");
+
+                printf("\n\r SDC UNMount OK2\n\r");
+
+                delay_m(2);   // FS 안정화
+
+                SDTime_out = SD_MOUNT_TIMEOUT;
+                GlobalSetting1.MCU_SD_STATUS = SDC_MOUNT;
+                break;
+            }
+
+            /* ================= WAIT ================= */
+            case SDC_WAIT:
+            default:
+                return;
+        }
+
+        /* CPU / FS breathing time */
+        delay_u(SD_LOOP_DELAY_MS);
+    }
+}
+
+
+#endif
+
 void SDC_FS_Task(void) 
 {
-	switch (GlobalSetting1.SDCARD_STATUS)
+	switch (GlobalSetting1.FPGA_SD_STATUS)
 	{
-		case SDC_INIT:
+		case F_SDC_INIT:
 		{
 			char result = 1;  // 0;
 			result = FPGA_SDC_INIT();          
 			if(result == PASS) 
 			{
-				GlobalSetting1.SDCARD_STATUS = SDC_MOUNT;
+				GlobalSetting1.FPGA_SD_STATUS = F_SDC_MOUNT;
 				delay_m(500);
 			}
 			else 
 			{
-				GlobalSetting1.SDCARD_STATUS = SDC_UNMOUNT; 
-				SDTime_out = 100;
+				GlobalSetting1.FPGA_SD_STATUS = F_SDC_UNMOUNT; 
+				F_SDTime_out = 100;
 				//GlobalSetting1.VIDEO_STATUS = VIDEO_BMPPTN_LOAD;
 			}
 			break;
 		}
-		case SDC_MOUNT:
+		case F_SDC_MOUNT:
 		{
-			GlobalSetting1.SDCARD_STATUS = SDC_WAIT;
+			GlobalSetting1.FPGA_SD_STATUS = F_SDC_WAIT;
 			GlobalSetting1.VIDEO_STATUS = VIDEO_BMPPTN_LOAD;
 			GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                  
               
 			break;
 		}
-		case SDC_UNMOUNT:
+		case F_SDC_UNMOUNT:
 		{           
 			char result = 0;
 			result = FPGA_SDC_INIT();          
 			if(result == PASS) 
 			{ 
 				//printf("\n\r SDC UNMount OK\n\r");
-				GlobalSetting1.SDCARD_STATUS = SDC_MOUNT;
+				GlobalSetting1.FPGA_SD_STATUS = F_SDC_MOUNT;
 				GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;
 				GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT; 
-				SDTime_out = 100;
+				F_SDTime_out = 100;
 			}
 			else 
 			{
-				if(0 < SDTime_out)
+				if(0 < F_SDTime_out)
 				{
-					SDTime_out--;
+					F_SDTime_out--;
 					GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT; 
 					GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                
-					GlobalSetting1.SDCARD_STATUS = SDC_UNMOUNT;                   
+					GlobalSetting1.FPGA_SD_STATUS = F_SDC_UNMOUNT;                   
 				}
 				else 
 				{
 					//printf("\n\r SDC UNMount Time Out\n\r");                    
 					GlobalSetting1.VIDEO_STATUS = VIDEO_BMPPTN_LOAD; 
 					GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;                
-					GlobalSetting1.SDCARD_STATUS = SDC_NO;
-					SDTime_out = 100;                    
+					GlobalSetting1.FPGA_SD_STATUS = F_SDC_NO;
+					F_SDTime_out = 100;                    
 				}  
 			}
 			break;                            
 		}
-		case SDC_WAIT:
+		case F_SDC_WAIT:
 		{
 			break;
 		} 
@@ -741,7 +722,7 @@ void SDC_FS_Task(void)
 	}
 }
 
-#endif
+//#endif
 /* *****************************************************************************
  End of File
  */

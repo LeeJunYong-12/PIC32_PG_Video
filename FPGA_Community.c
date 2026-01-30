@@ -59,12 +59,14 @@ void FPGA_Service(void)
     switch(GlobalSetting1.FPGA_STATUS)
     {
         case FPGA_STATE_INIT:
-        {
-			
+        {		
             FPGA_initail();
             GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;
             GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;
-            GlobalSetting1.SDCARD_STATUS = SDC_INIT;
+            //GlobalSetting1.SDCARD_STATUS = SDC_INIT;
+			GlobalSetting1.FPGA_SD_STATUS = F_SDC_INIT;
+			//GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
+			
             break;
         }
         case FPGA_STATE_VERSION:
@@ -2134,7 +2136,7 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
 
 	TINC_ADDR = ModeInfo.gm_DDR_INCREMENT;
 
-    if(GlobalSetting1.gm_MODEL_TYPE == 99)
+    if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 	{
 		if((GlobalSetting1.gm_RGB_H_SIZE * 4) % 32)
 		{
@@ -2176,12 +2178,13 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
 	
 	PMP_WRITE_ONE(FPGA_FILE_READ_EN, 1);
 
-	for(i=0; i<500; i++)
+	for(i=0; i<800; i++)
 	{
 	    delay_m(10);
 		if(FPGA_FILE_END_READ())
 		{
 		    printf("FPGA_FILE_END_READ OK \n\r");
+			printf("\n\r");
 			break;
 		}
 	}
@@ -2286,7 +2289,7 @@ void FPGA_ImgViewForBMP(unsigned int mSEL)
     
 	TINC_ADDR = ModeInfo.gm_DDR_INCREMENT;
 
-    if(GlobalSetting1.gm_MODEL_TYPE == 99)
+    if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 	{
 		if((GlobalSetting1.gm_RGB_H_SIZE * 4) % 32)
 		{
@@ -7645,7 +7648,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
     HALF_TEMP = GlobalSetting1.gm_RGB_H_SIZE / 2;
     y = HALF_POS = COUNT_TEMP_L = COUNT_TEMP_R = 0;
 
-	if(GlobalSetting1.gm_MODEL_TYPE != 99)	div_m = len / ModeInfo.gm_BmpDrawHsize;
+	if(GlobalSetting1.gm_MODEL_TYPE != 99 && GlobalSetting1.gm_MODEL_TYPE != 97)	div_m = len / ModeInfo.gm_BmpDrawHsize;
 	//printf("len: %d, gm_BmpDrawHsize: %d, div_m: %d, gm_PNG_H_SIZE: %d\n\r",len, ModeInfo.gm_BmpDrawHsize, div_m,GlobalSetting1.gm_PNG_H_SIZE);
  
     if(!(GlobalSetting1.gm_RGB_H_SIZE %4)) // Quad Mode
@@ -7690,7 +7693,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
                             }
                         }
                         HALF_POS++;
-						if(GlobalSetting1.gm_MODEL_TYPE == 99)
+						if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 						{
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7756,7 +7759,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
 							}
 						}
 						HALF_POS++;
-						if(GlobalSetting1.gm_MODEL_TYPE == 99)
+						if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 						{
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7775,7 +7778,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
 			}
             else
             {
-				if(GlobalSetting1.gm_MODEL_TYPE == 99)
+				if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 				{
 					for(i = 0; i < (len / 6); i++)   //start new line
 					{
@@ -7844,7 +7847,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
                                 }
                             }
                             HALF_POS++;
-							if(GlobalSetting1.gm_MODEL_TYPE == 99)
+							if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 							{
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7912,7 +7915,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
                                 }
                             }
                             HALF_POS++;
-							if(GlobalSetting1.gm_MODEL_TYPE == 99)
+							if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 							{
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7933,7 +7936,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
             }
             else
             {
-				if(GlobalSetting1.gm_MODEL_TYPE == 99)
+				if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 				{
 					for(i = 0; i < (len / 6); i++)   //start new line
 					{
@@ -7963,7 +7966,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
     {
         if(ModeInfo.gm_DIS_POSITION == 0)
         {
-			if(GlobalSetting1.gm_MODEL_TYPE == 99)
+			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 			{			
 				for(i = 0; i < (len / 6); i++)
 				{
@@ -7990,7 +7993,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
         }
         else
         {
-			if(GlobalSetting1.gm_MODEL_TYPE == 99)
+			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 			{
 				for(i = 0; i < (len / 6); i++)	 //start new line
 				{
@@ -8018,7 +8021,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
     {
 		if(ModeInfo.gm_DIS_POSITION == 0)
 		{
-			if(GlobalSetting1.gm_MODEL_TYPE == 99)
+			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 			{
 				for(i = 0; i < (len / 6); i++)	 //start new line
 				{
@@ -8043,7 +8046,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
         }
         else
         {
-			if(GlobalSetting1.gm_MODEL_TYPE == 99)
+			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 			{
 				for(i = 0; i < (len / 6); i++)	 //start new line
 				{
@@ -8119,7 +8122,7 @@ char BMP_DATA_Write(unsigned char* pBuff, unsigned int Count)
 #define BLOCK_SIZE (65536 * 2) // 128KB ∫Ì∑œ ≈©±‚
 #define MAX_DECOMPRESSED_SIZE BLOCK_SIZE //(BLOCK_SIZE * 8) // æ–√‡ «ÿ¡¶ µ•¿Ã≈Õ πˆ∆€
 
-#if 1
+#if 0
 // ¿¸ø™ ∫Øºˆ∑Œ º±æ (Ω∫≈√ ø¿πˆ«√∑ŒøÏ πÊ¡ˆ)
 static char compressedBuffer[BLOCK_SIZE];
 static char outputBuffer[MAX_DECOMPRESSED_SIZE];
@@ -8223,7 +8226,7 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile) {
         if (decompressionFailed) {
             printf("Decompression failed. Deleting output file: %s\r\n", outputFile);
 
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 4; i++) {
                 SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
                 if (fileHandle != SYS_FS_HANDLE_INVALID) {
                     SYS_FS_FileClose(fileHandle);
@@ -8263,44 +8266,43 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile) {
 
 #else
 
-void decompressLZ4_SD(const char* inputFile, const char* outputFile) {
+static char compressedBuffer[BLOCK_SIZE];
+static char outputBuffer[MAX_DECOMPRESSED_SIZE];
+
+void decompressLZ4_SD(const char* inputFile, const char* outputFile)
+{
     int blockCount;
     int offset;
     bool decompressionFailed;
     char retry_cnt = 0;
-	char i;
+    char i;
 
     do {
         blockCount = 0;
         offset = 0;
         decompressionFailed = false;
 
-        // ±‚¡∏ ∆ƒ¿œ¿Ã ¿÷¿∏∏È Ω∫≈µ
-        SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
+        /* Ïù¥ÎØ∏ TXT ÌååÏùºÏù¥ ÏûàÏúºÎ©¥ Ïä§ÌÇµ */
+        /*SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
         if (fileHandle != SYS_FS_HANDLE_INVALID) {
             printf("Skipped: %s already exists.\r\n", outputFile);
             SYS_FS_FileClose(fileHandle);
             return;
-        }
-        SYS_FS_FileClose(fileHandle);
+        }*/
 
-        // ªı ∆ƒ¿œ ª˝º∫
+        /* Ï∂úÎ†• TXT ÌååÏùº ÏÉùÏÑ± */
         SYS_FS_HANDLE createFile = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_WRITE);
         if (createFile == SYS_FS_HANDLE_INVALID) {
-            printf("Error: Failed to create new output file!\r\n");
+            printf("Error: Failed to create output TXT file!\r\n");
             return;
         }
         SYS_FS_FileClose(createFile);
-        printf("New output file initialized: %s\r\n", outputFile);
-
-        // æ–√‡ µ•¿Ã≈Õ∏¶ ¿˙¿Â«“ πˆ∆€
-        char compressedBuffer[BLOCK_SIZE];
-        char outputBuffer[MAX_DECOMPRESSED_SIZE];
+        printf("New TXT file initialized: %s\r\n", outputFile);
 
         while (1) {
             SYS_FS_HANDLE inFile = SYS_FS_FileOpen(inputFile, SYS_FS_FILE_OPEN_READ);
             if (inFile == SYS_FS_HANDLE_INVALID) {
-                printf("Failed to open input file\r\n");
+                printf("Failed to open input LZ4 file\r\n");
                 decompressionFailed = true;
                 break;
             }
@@ -8308,54 +8310,51 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile) {
             SYS_FS_FileSeek(inFile, offset, SYS_FS_SEEK_SET);
 
             int compressedSize;
+            int bytesRead = SYS_FS_FileRead(inFile, &compressedSize, sizeof(compressedSize));
 
-			int bytesRead = SYS_FS_FileRead(inFile, &compressedSize, sizeof(compressedSize));
-		    if (bytesRead == 0) {
-		        printf("\r\nEOF reached.\r\n");
-		        SYS_FS_FileClose(inFile);
-		        break; // ¡§ªÛ ¡æ∑·
-		    } else if (bytesRead != sizeof(compressedSize)) {
-		        printf("\r\nError: Unexpected end of file or read error (bytesRead = %d)\r\n", bytesRead);
-		        SYS_FS_FileClose(inFile);
-		        decompressionFailed = true;
-		        //retry_cnt++;
-		        break;
-   			 }
+            if (bytesRead == 0) {
+                printf("\r\nEOF reached.\r\n");
+                SYS_FS_FileClose(inFile);
+                break;
+            }
+            else if (bytesRead != sizeof(compressedSize)) {
+                printf("Read error at block header (bytesRead=%d)\r\n", bytesRead);
+                SYS_FS_FileClose(inFile);
+                decompressionFailed = true;
+                break;
+            }
 
-            // ∫Ì∑œ ≈©±‚ ∞À¡ı
             if (compressedSize <= 0 || compressedSize > BLOCK_SIZE) {
-                printf("Error: Invalid compressed block size %d at offset %d!\r\n", compressedSize, offset);
+                printf("Invalid block size %d at offset %d\r\n", compressedSize, offset);
                 SYS_FS_FileClose(inFile);
                 decompressionFailed = true;
                 break;
             }
 
             int readBytes = SYS_FS_FileRead(inFile, compressedBuffer, compressedSize);
+            SYS_FS_FileClose(inFile);
+
             if (readBytes != compressedSize) {
-                printf("Error: Expected %d bytes but read %d bytes at block %d\r\n",
-                       compressedSize, readBytes, blockCount);
-                SYS_FS_FileClose(inFile);
+                printf("Block read mismatch (%d/%d)\r\n", readBytes, compressedSize);
                 decompressionFailed = true;
                 break;
             }
-            SYS_FS_FileClose(inFile);
 
-			SYS_INT_Disable(); // ¿Œ≈Õ∑¥∆Æ ∫Ò»∞º∫»≠
-            // æ–√‡ «ÿ¡¶ ºˆ«‡
-            int decompressedSize = LZ4_decompress_safe(compressedBuffer, outputBuffer, compressedSize, MAX_DECOMPRESSED_SIZE);
-			SYS_INT_Enable();  // ¿Œ≈Õ∑¥∆Æ ¥ŸΩ√ »∞º∫»≠
+            SYS_INT_Disable();
+            int decompressedSize =
+                LZ4_decompress_safe(compressedBuffer, outputBuffer,
+                                    compressedSize, MAX_DECOMPRESSED_SIZE);
+            SYS_INT_Enable();
 
-			
             if (decompressedSize < 0) {
-                printf("Decompression failed at block %d! Compressed Size = %d, Offset = %d\r\n",
-                       blockCount, compressedSize, offset);
+                printf("LZ4 decompression failed at block %d\r\n", blockCount);
                 decompressionFailed = true;
                 break;
             }
 
             SYS_FS_HANDLE outFile = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_APPEND);
             if (outFile == SYS_FS_HANDLE_INVALID) {
-                printf("Failed to open output file\r\n");
+                printf("Failed to open TXT file for append\r\n");
                 decompressionFailed = true;
                 break;
             }
@@ -8363,61 +8362,53 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile) {
             SYS_FS_FileWrite(outFile, outputBuffer, decompressedSize);
             SYS_FS_FileSync(outFile);
             SYS_FS_FileClose(outFile);
-            printf("/");
 
+            printf("/");
             blockCount++;
             offset += sizeof(compressedSize) + compressedSize;
         }
 
-        // µƒ⁄µ˘ Ω«∆– Ω√ √‚∑¬ ∆ƒ¿œ ªË¡¶
-		if (decompressionFailed) {
-		    printf("Decompression failed. Deleting output file: %s\r\n", outputFile);
+        /* ================= Ïã§Ìå® Ï≤òÎ¶¨ ================= */
+        if (decompressionFailed) {
+            printf("Decompression failed. Removing TXT file: %s\r\n", outputFile);
 
-		    for(i=0; i<2; i++)
-		    {
-			    // ∆ƒ¿œ¿Ã ø≠∑¡ ¿÷¥Ÿ∏È ¥›±‚
-			    SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
-			    if (fileHandle != SYS_FS_HANDLE_INVALID) {
-			        SYS_FS_FileClose(fileHandle);
-			    }
-				SYS_FS_FileClose(fileHandle);
+            for (i = 0; i < 4; i++) {
+                if (SYS_FS_FileDirectoryRemove(outputFile) == SYS_FS_RES_SUCCESS) {
+                    printf("TXT file deleted.\r\n");
+                    break;
+                }
+                delay_m(100);
+            }
 
-			    // ∆ƒ¿œ ªË¡¶ Ω√µµ
-			    if (SYS_FS_FileDirectoryRemove(outputFile) != SYS_FS_RES_SUCCESS) {
-			        printf("Warning: Failed to delete output file %s\r\n", outputFile);
-			    } else {
-			        printf("Deleted output file: %s\r\n", outputFile);
-					break;
-			    }
-		    }
+            retry_cnt++;
 
-		    // ∆ƒ¿œ Ω√Ω∫≈€ µø±‚»≠ π◊ ¥Î±‚
-		    SYS_FS_FileSync(outputFile);
-		    delay_m(200); // FreeRTOS ªÁøÎ Ω√ µÙ∑π¿Ã
+            if (retry_cnt >= 2) {
+                printf("Retry limit exceeded. Abort.\r\n");
+                return;
+            }
 
-		    // ªË¡¶ »ƒ »Æ¿Œ
-		    SYS_FS_FSTAT fileStat;
-		    if (SYS_FS_FileStat(outputFile, &fileStat) == SYS_FS_RES_SUCCESS) {
-		        printf("Error: File still exists after deletion: %s\r\n", outputFile);
-		        return;
-		    }
-
-		    retry_cnt++;
-
-		    if (retry_cnt > 1) {
-		        printf("Retry limit exceeded. Aborting.\r\n");
-		        return;
-		    }
-
-		    printf("Error encountered. Restarting decompression... (Retry %d)\r\n", retry_cnt);
-		}
-		else {
+            printf("Retry decompression... (%d)\r\n", retry_cnt);
+        }
+        /* ================= ÏÑ±Í≥µ Ï≤òÎ¶¨ ================= */
+        else {
             printf("\r\nDecompression complete: %s\r\n", outputFile);
+
+            /* ÏÑ±Í≥µ Ïãú ÏõêÎ≥∏ LZ4 ÌååÏùº ÏÇ≠Ï†ú */
+            for (i = 0; i < 4; i++) {
+                if (SYS_FS_FileDirectoryRemove(inputFile) == SYS_FS_RES_SUCCESS) {
+                    printf("LZ4 source file deleted: %s\r\n", inputFile);
+                    break;
+                }
+                delay_m(100);
+            }
+
             break;
         }
 
-    } while (retry_cnt <= 1);
+    } while (retry_cnt < 2);
 }
+
+
 #endif
 
 #if 0
@@ -8722,9 +8713,13 @@ char LZ4_BMPSave(unsigned int BMPsel)
 
 	sprintf(tx_string,"/mnt/myDrive/%d.lz4",BMPsel);   
 
-	if(GlobalSetting1.gm_MODEL_TYPE == 99)
+	if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE)
 	{
 		sprintf(tx_string2,"/mnt/myDrive/%d.txt",BMPsel); 
+	}
+	else if(GlobalSetting1.gm_MODEL_TYPE == 25)
+	{
+		return PASS;
 	}
 	else	
 	{
@@ -8736,6 +8731,7 @@ char LZ4_BMPSave(unsigned int BMPsel)
     return PASS;    
 }
 
+#if 0
 
 void SD_SaveBMP_DEL(char bmp_num)
 {
@@ -8745,43 +8741,97 @@ void SD_SaveBMP_DEL(char bmp_num)
     if(bmp_num == 0){
         for(i=0; i< MAX_DOWN_BMP_SIZE; i++)
         {
-        	if(1) //GlobalSetting1.gm_MODEL_TYPE == 99)
+        	if(GlobalSetting1.gm_MODEL_TYPE == 25 || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE){
+				sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
+			}
+        	else if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
 			{
 				sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 
 			}
-			else if(GlobalSetting1.gm_MODEL_TYPE == 25){
-				sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
-			}
 			else{
             	sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
-            //appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ );
         	}
             SYS_FS_FileDirectoryRemove(tx_string);
-            //SYS_FS_FileClose(appData.fileHandle);
             printf("File DEL : %s \n\r", tx_string);
         }
         AckPackSend(1); 
     }
     else
     {
-		if(1) //GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
 	    {
 			sprintf(tx_string,"/mnt/myDrive/%d.txt",bmp_num); 
 		}
-		else if(GlobalSetting1.gm_MODEL_TYPE == 25){
+		else if(GlobalSetting1.gm_MODEL_TYPE == 25 || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE){
 			sprintf(tx_string,"/mnt/myDrive/%d.lz4",bmp_num); 
 		}
 		else{
        		sprintf(tx_string,"/mnt/myDrive/%d.bmp",bmp_num);   
 		}
-        //appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
         SYS_FS_FileDirectoryRemove(tx_string);
-        //SYS_FS_FileClose(appData.fileHandle);
         printf("File DEL : %s \n\r", tx_string);
         AckPackSend(1);
     }
 }
 
+#else 
+
+bool SD_DeleteFileAndCheck(const char* path)
+{
+    SYS_FS_FSTAT stat;
+    int retry;
+
+    for (retry = 0; retry < 2; retry++) {
+        SYS_FS_FileDirectoryRemove(path);
+
+        if (SYS_FS_FileStat(path, &stat) != SYS_FS_RES_SUCCESS) {
+            return 1;
+        }
+        delay_m(10);
+    }
+    return 0;
+}
+
+void SD_SaveBMP_DEL(char bmp_num)
+{ 
+	short i; 
+	char tx_string[25] = {0, }; 
+	bool result; 
+
+	printf("f_SD_MEM_DEL Start \n\r");
+	
+	SD_SEL_LOW; // MCU <----> SD CARD
+	delay_m(20); 
+	
+	SDC_MCU_Task(); 
+	printf("MCU_SD_STATUS2 : %d \n\r", GlobalSetting1.MCU_SD_STATUS); 
+	
+	for (i = 0; i < 120; i++) 
+	{ 
+		sprintf(tx_string, "/mnt/myDrive/%d.lz4", i);
+		result = SD_DeleteFileAndCheck(tx_string); 
+		if(result == 0) printf("[LZ4] %s : %s\r\n", tx_string, result ? "DEL OK" : "DEL FAIL"); 
+	} 
+	printf("lz4 delete End\r\n");
+	for (i = 0; i < 120; i++) 
+	{ 
+		sprintf(tx_string, "/mnt/myDrive/%d.txt", i); 
+		result = SD_DeleteFileAndCheck(tx_string); 
+		if(result == 0) printf("[TXT] %s : %s\r\n", tx_string, result ? "DEL OK" : "DEL FAIL"); 
+	} 
+	printf("txt delete End\r\n");
+	for (i = 0; i < 120; i++) 
+	{ 
+		sprintf(tx_string, "/mnt/myDrive/%d.bmp", i); 
+		result = SD_DeleteFileAndCheck(tx_string); 
+		if(result == 0) printf("[BMP] %s : %s\r\n", tx_string, result ? "DEL OK" : "DEL FAIL");
+	} 
+	printf("bmp delete End\r\n");
+	printf("f_SD_MEM_DEL End\r\n");
+	AckPackSend(1); 
+}
+
+#endif
 
 void SD_SaveBMP_LIST(char *nlist)
 {
@@ -8790,102 +8840,65 @@ void SD_SaveBMP_LIST(char *nlist)
 	char tx_string[25] = {0, };
     char List[MAX_DOWN_BMP_SIZE] = {0, };
 
-	//printf("MCU_SD_STATUS1 : %d \n\r", GlobalSetting1.MCU_SD_STATUS);
-
 	SD_SEL_LOW; // MCU <----> SD CARD
-	delay_m(2);
-	//SDC_MCU_Task();
+	delay_m(20);
+
+	SDC_MCU_Task(); 
+
+	printf("gm_Image_Type : %d \n\r", GlobalSetting1.gm_Image_Type);
+	
     memset(nlist, 0 , MAX_DOWN_BMP_SIZE);
 
     for(i=1; i< MAX_DOWN_BMP_SIZE; i++)
     {
-		if(1) //GlobalSetting1.gm_MODEL_TYPE == 99)
+    	if(GlobalSetting1.gm_Image_Type == D_LZ4_TYPE)
 		{
-			sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 
-		}
-		else if(GlobalSetting1.gm_MODEL_TYPE == 25){
 			sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
 		}
-		else{
-			sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
-		//appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ );
+		else if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
+		{
+			sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 		
 		}
-
+		else
+		{
+			sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
+		}
         appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
 
-        fileSize = SYS_FS_FileSize(appData.fileHandle);
-        //printf("fileSize : %d \n\r",fileSize); 	
+        fileSize = SYS_FS_FileSize(appData.fileHandle);    //printf("fileSize : %d \n\r",fileSize); 	
         if(appData.fileHandle == SYS_FS_HANDLE_INVALID || fileSize < 100)  List[i-1] = 0;
         else List[i-1] = 1;
 
         SYS_FS_FileClose(appData.fileHandle);
 
-    	/*if(GlobalSetting1.gm_MODEL_TYPE == 99){
+    	if(GlobalSetting1.gm_Image_Type == D_LZ4_TYPE)
+		{
 	        if(List[i-1] == 1)	LZ4_BMPSave(i);
-    	}*/
-
+    	}
     }
-
-    memcpy(nlist , List, MAX_DOWN_BMP_SIZE);   
+	GlobalSetting1.gm_Image_Type = D_TXT_TYPE;
 	
+    memcpy(nlist , List, MAX_DOWN_BMP_SIZE);   	
 	printf("MCU_SD_STATUS2 : %d \n\r", GlobalSetting1.MCU_SD_STATUS);
-
 }
 
-#if 0
-unsigned char SD_TEXT_LIST(void)
-{
-    short i,j=0;
-    long fileSize;
-	char tx_string[25] = {0, };
-	unsigned char flag = 0;
-
-	GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
-
-	SD_SEL_LOW; // MCU <----> SD CARD
-	delay_m(2);
-	SDC_MCU_Task();
-
-    for(i=1; i< MAX_DOWN_BMP_SIZE; i++)
-    {
-		sprintf(tx_string,"/mnt/myDrive/%d.txt",i);  
-
-        appData.fileHandle = SYS_FS_FileOpen(tx_string, SYS_FS_FILE_OPEN_READ);
-
-        fileSize = SYS_FS_FileSize(appData.fileHandle);
-        //printf("fileSize : %d \n\r",fileSize); 	
-        if(appData.fileHandle == SYS_FS_HANDLE_INVALID || fileSize < 100)
-		{
-			;;;;
-       	}
-        else
-		{
-			flag = 1;
-        }
-
-        SYS_FS_FileClose(appData.fileHandle);
-
-    }
-	
-	printf("flag : %d \n\r", flag);
-	return flag;
-
-}
-#endif
 
 int FPGA_Save_SD(unsigned char* pData, int offset, int size, char type)
 {
 	char tx_string[25] = {0, };
 	//sprintf(tx_string,"/mnt/myDrive/1.bmp");
-	if(type == 0)
+
+	GlobalSetting1.gm_Image_Type = type;
+	
+	if(type == D_BMP_TYPE)
 	{
 		sprintf(tx_string,"/mnt/myDrive/%d.bmp",GlobalSetting1.gm_DownBMP_NUM);   
 	}
-	else if(type == 1)
+	else if(type == D_TXT_TYPE)
 	{
 		sprintf(tx_string,"/mnt/myDrive/%d.txt",GlobalSetting1.gm_DownBMP_NUM); 
 	}
-	else if(type == 2)
+	else if(type == D_LZ4_TYPE)
 	{
 		sprintf(tx_string,"/mnt/myDrive/%d.lz4",GlobalSetting1.gm_DownBMP_NUM); 
 	}
@@ -12331,7 +12344,7 @@ char ETH_DATA_Write(unsigned char* pBuff, unsigned int Count)
 
 	if(!(GlobalSetting1.gm_RGB_H_SIZE % 4))
     { 
-		if(GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 		{
 			DrawSize2 = ModeInfo.gm_DRAWIMGSIZE * 6; // 191002 pty
 		}
@@ -12342,7 +12355,7 @@ char ETH_DATA_Write(unsigned char* pBuff, unsigned int Count)
     }
 	else if((GlobalSetting1.gm_RGB_H_SIZE %4) && !(GlobalSetting1.gm_RGB_H_SIZE %2)) // 220714
 	{
-		if(GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 		{
 			DrawSize2 = (ModeInfo.gm_DRAWIMGSIZE * 6) + (ModeInfo.gm_V_SIZE * 2);
 		}
@@ -12353,7 +12366,7 @@ char ETH_DATA_Write(unsigned char* pBuff, unsigned int Count)
     }
     else  // 220714
     {
-		if(GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
 		{
 			DrawSize2 = (ModeInfo.gm_DRAWIMGSIZE * 6) + (ModeInfo.gm_V_SIZE * 1);
 		}
@@ -12433,12 +12446,11 @@ void SavePATAndBMP(void)
 	unsigned int	ETC;
 
 	SD_SEL_HIGH; // FPGA <----> SD CARD
-	//delay_m(10);
-	printf("SDCARD_STATUS : %d \n\r", GlobalSetting1.SDCARD_STATUS);
+	delay_m(20);
+	printf("FPGA_SD_STATUS : %d \n\r", GlobalSetting1.FPGA_SD_STATUS);
 		
-    if(GlobalSetting1.SDCARD_STATUS != SDC_NO)
+    if(GlobalSetting1.FPGA_SD_STATUS != F_SDC_NO)
     {  
-		//printf("SDCARD_STATUS : %d \n\r", GlobalSetting1.SDCARD_STATUS);
         for(i = 0; i < ModeInfo.gm_BMP_NUM; i++)
         {
             printf("Direct BMP Save Start %d \n\r", i+1);  
@@ -12462,9 +12474,9 @@ void SavePATAndBMP(void)
 
 	for(i = 0; i < ModeInfo.gm_PAT_NUM; i++)       
 	{
-        printf("DirectPATSave Start %d \n\r", i);  
+        printf("DirectPATSave Start %d \n\r", i+1);  
         FPGA_DirectPATSave(ModeInfo.gm_PAT_ROOM[i], i);  
-        printf("DirectPATSave END %d \n\r", i);
+        printf("DirectPATSave END %d \n\r", i+1);
         if(GlobalSetting1.gm_RGB_H_SIZE > 700)	delay_m(50);//100
 	}
     //SYS_FS_Unmount("/mnt/myDrive"); 

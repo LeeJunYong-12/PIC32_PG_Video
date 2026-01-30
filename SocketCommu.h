@@ -14,7 +14,7 @@
     Describe the purpose of this file.
  */
 /* ************************************************************************** */
-
+void Test_Video_mode(unsigned int p1, unsigned int p2, unsigned int p3);
 void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen);
 
 void VersionSend(void);

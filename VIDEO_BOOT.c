@@ -41,8 +41,8 @@ void BOOT_Service(void)
 	{
 		case VIDEO_INIT:
 		{   
-			//Port_Init(); 
-			//VARIABLE_Init();
+			Port_Init();     // 260107
+			VARIABLE_Init(); // 260107
 			GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;            
 			GlobalSetting1.FPGA_STATUS = FPGA_STATE_VERSION; 
 			break;

@@ -59,6 +59,7 @@ int main ( void )
         BOOT_Service(); 
         FPGA_Service(); 
         SDC_FS_Task();  
+		//SDC_MCU_Task();
         //printf("VIDEO BD Address= %s , Mac= %s\r\n",  ipNetConf.ipAddr,ipNetConf.macAddr);
     }
 
@@ -225,7 +226,8 @@ void VARIABLE_Init(void)
     GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;
     GlobalSetting1.VIDEO_STATUS = VIDEO_INIT;
     GlobalSetting1.SDCARD_STATUS = SDC_WAIT;
-	GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
+	GlobalSetting1.FPGA_SD_STATUS = F_SDC_WAIT;
+	GlobalSetting1.MCU_SD_STATUS = SDC_WAIT;
     GlobalSetting1.gm_FPGA_Status = 0;   
     GlobalSetting1.gm_Initialize_flag = 0;
     GlobalSetting1.ETH_BMP_LOAD = 0;
@@ -243,7 +245,8 @@ void VARIABLE_Init(void)
     Rx_Count = 0;  ////Urat RX Count
     buff_full = 0; ////Urat RX Buff Flag
     
-    SDTime_out = 10000;   
+    SDTime_out = 1000;   
+	F_SDTime_out = 100;   
 	ModeInfo.gm_BaseADDR_BMP = 0;
 	ModeInfo.gm_BaseADDR_PAT = 0;
 
@@ -251,6 +254,7 @@ void VARIABLE_Init(void)
 	GlobalSetting2.PIXEL_WIDTH = 0;    // D205 & D215 1pixel width
 
 	GlobalSetting1.LED_Status = 1;
+	GlobalSetting1.gm_Image_Type = D_TXT_TYPE; // 0 bmp, 1 txt, 2 lz4
 }
 
 /*******************************************************************************
