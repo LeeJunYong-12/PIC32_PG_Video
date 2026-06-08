@@ -32,20 +32,16 @@
 #define _OK       1
 #define _NG       0
 
-#define m_MV_TAIMEN 0
-#define m_DP049  	1
-#define m_B1 	 	2
-#define m_STORM  	3
-#define m_DP076  	4
-#define m_ALPHA  	5
-#define m_DP086  	6
-#define m_DP116     6
-#define m_META2		7
-#define m_DP150  	8
-
+#define m_D99X 		99
+#define m_D970  	97
+#define m_X40X 	 	97
+#define m_D96X  	0
+#define m_DEF       25
 
 #define PAT_TYPE     0
 #define BMP_TYPE     1
+
+#define FPGA_SDC     1
 
 //********************************* PORT OUT/IN Setting Control define *****************************************
 #define FPGA_HW_RESET_OUTPORT         SYS_PORTS_PinDirectionSelect (PORTS_ID_0, SYS_PORTS_DIRECTION_OUTPUT, PORT_CHANNEL_K, PORTS_BIT_POS_7)

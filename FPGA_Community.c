@@ -62,9 +62,12 @@ void FPGA_Service(void)
         {		
             FPGA_initail();
             GlobalSetting1.FPGA_STATUS = FPGA_STATE_WAIT;
-            GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;
-            //GlobalSetting1.SDCARD_STATUS = SDC_INIT;
+            GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;            
+#if FPGA_SDC
 			GlobalSetting1.FPGA_SD_STATUS = F_SDC_INIT;
+#else
+			GlobalSetting1.SDCARD_STATUS = SDC_INIT;
+#endif
 			//GlobalSetting1.MCU_SD_STATUS = SDC_INIT;
 			
             break;
@@ -2136,7 +2139,7 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
 
 	TINC_ADDR = ModeInfo.gm_DDR_INCREMENT;
 
-    if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+    if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 	{
 		if((GlobalSetting1.gm_RGB_H_SIZE * 4) % 32)
 		{
@@ -2155,12 +2158,14 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
 	TSTART_ADDR = ModeInfo.gm_BaseADDR_BMP + (TINC_ADDR * mSEL);
 	TEND_ADDR = TSTART_ADDR + TINC_ADDR;
 
+#if FPGA_SDC
 	PMP_WRITE_ONE(FPGA_FILE_READ_EN, 0);
 	NumToASCII(BmpNum);
+#endif
 
-#if 0
+#if 1
 	printf("************pat_ram start******\n\r");
-	printf("bmp num %d\n\r",mSEL);
+	printf("bmp num %d\n\r",(mSEL + 1));
 	printf("STARADDR_H 0x%x\n\r",(unsigned short)(TSTART_ADDR >> 16));
 	printf("STARADDR_L 0x%x\n\r",(unsigned short)TSTART_ADDR);
 	printf("ENDADDR_H 0x%x\n\r",(unsigned short)(TEND_ADDR >> 16));
@@ -2175,7 +2180,8 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
     PMP_WRITE_ONE(VIDEO_DATA_FIFO_Addr, 0); //DUMMY
     
 	PMP_WRITE_ONE(WRITE_CONTROL_Addr, _FIFO_WRITE_ENABLE | _FIFO_WRITE_START); 
-	
+
+#if FPGA_SDC	
 	PMP_WRITE_ONE(FPGA_FILE_READ_EN, 1);
 
 	for(i=0; i<800; i++)
@@ -2189,6 +2195,8 @@ void FPGA_ImgReadyToBeSavedForBMP(unsigned int BmpNum, unsigned int mSEL)
 		}
 	}
     //PMP_WRITE_ONE(FPGA_FILE_READ_EN, 0);
+#endif
+
     ModeInfo.gm_BaseADDR_DIRECTBMP = TEND_ADDR;
 }
 
@@ -2289,7 +2297,7 @@ void FPGA_ImgViewForBMP(unsigned int mSEL)
     
 	TINC_ADDR = ModeInfo.gm_DDR_INCREMENT;
 
-    if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+    if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 	{
 		if((GlobalSetting1.gm_RGB_H_SIZE * 4) % 32)
 		{
@@ -6815,9 +6823,13 @@ void FPGA_funcFullDraw(DrawPatternInfo *DrawINFO)
 
 void New_GRAY_LEVEL_Control(unsigned short nRED,unsigned short nGREEN,unsigned short nBLUE)
 {
-	//nRED=(nRED<<2);
-	//nGREEN=(nGREEN<<2);
-	//nBLUE=(nBLUE<<2);
+    if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X){;;;;}
+	else
+	{
+		nRED=(nRED<<2);
+		nGREEN=(nGREEN<<2);
+		nBLUE=(nBLUE<<2);
+	}
 
 	PMP_WRITE_ONE(Wr_GRAY_RED_VALUE, nRED);
 	PMP_WRITE_ONE(Wr_GRAY_GREEN_VALUE, nGREEN);  
@@ -7648,7 +7660,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
     HALF_TEMP = GlobalSetting1.gm_RGB_H_SIZE / 2;
     y = HALF_POS = COUNT_TEMP_L = COUNT_TEMP_R = 0;
 
-	if(GlobalSetting1.gm_MODEL_TYPE != 99 && GlobalSetting1.gm_MODEL_TYPE != 97)	div_m = len / ModeInfo.gm_BmpDrawHsize;
+	if(GlobalSetting1.gm_MODEL_TYPE != m_D99X && GlobalSetting1.gm_MODEL_TYPE != m_X40X)	div_m = len / ModeInfo.gm_BmpDrawHsize;
 	//printf("len: %d, gm_BmpDrawHsize: %d, div_m: %d, gm_PNG_H_SIZE: %d\n\r",len, ModeInfo.gm_BmpDrawHsize, div_m,GlobalSetting1.gm_PNG_H_SIZE);
  
     if(!(GlobalSetting1.gm_RGB_H_SIZE %4)) // Quad Mode
@@ -7693,7 +7705,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
                             }
                         }
                         HALF_POS++;
-						if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+						if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 						{
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7759,7 +7771,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
 							}
 						}
 						HALF_POS++;
-						if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+						if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 						{
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 							DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7778,7 +7790,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
 			}
             else
             {
-				if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+				if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 				{
 					for(i = 0; i < (len / 6); i++)   //start new line
 					{
@@ -7847,7 +7859,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
                                 }
                             }
                             HALF_POS++;
-							if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+							if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 							{
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7915,7 +7927,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
                                 }
                             }
                             HALF_POS++;
-							if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+							if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 							{
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+0] << 8) | Imgbuff[y1+1]); //>> 7;//r
 								DMABuff[dmaVal.send_Len++] = ((Imgbuff[y1+2] << 8) | Imgbuff[y1+3]); //>> 7;//g
@@ -7936,7 +7948,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
             }
             else
             {
-				if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+				if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 				{
 					for(i = 0; i < (len / 6); i++)   //start new line
 					{
@@ -7966,7 +7978,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
     {
         if(ModeInfo.gm_DIS_POSITION == 0)
         {
-			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 			{			
 				for(i = 0; i < (len / 6); i++)
 				{
@@ -7993,7 +8005,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
         }
         else
         {
-			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 			{
 				for(i = 0; i < (len / 6); i++)	 //start new line
 				{
@@ -8021,7 +8033,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
     {
 		if(ModeInfo.gm_DIS_POSITION == 0)
 		{
-			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 			{
 				for(i = 0; i < (len / 6); i++)	 //start new line
 				{
@@ -8046,7 +8058,7 @@ void FPGA_10bit_Data_CHG(unsigned char *Imgbuff, unsigned short len)
         }
         else
         {
-			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 			{
 				for(i = 0; i < (len / 6); i++)	 //start new line
 				{
@@ -8122,149 +8134,6 @@ char BMP_DATA_Write(unsigned char* pBuff, unsigned int Count)
 #define BLOCK_SIZE (65536 * 2) // 128KB ºí·Ï Å©±â
 #define MAX_DECOMPRESSED_SIZE BLOCK_SIZE //(BLOCK_SIZE * 8) // ¾ÐÃà ÇØÁ¦ µ¥ÀÌÅÍ ¹öÆÛ
 
-#if 0
-// Àü¿ª º¯¼ö·Î ¼±¾ð (½ºÅÃ ¿À¹öÇÃ·Î¿ì ¹æÁö)
-static char compressedBuffer[BLOCK_SIZE];
-static char outputBuffer[MAX_DECOMPRESSED_SIZE];
-
-void decompressLZ4_SD(const char* inputFile, const char* outputFile) {
-    int blockCount;
-    int offset;
-    bool decompressionFailed;
-    char retry_cnt = 0;
-    char i;
-
-    do {
-        blockCount = 0;
-        offset = 0;
-        decompressionFailed = false;
-
-        // ±âÁ¸ ÆÄÀÏÀÌ ÀÖÀ¸¸é ½ºÅµ
-        SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
-        if (fileHandle != SYS_FS_HANDLE_INVALID) {
-            printf("Skipped: %s already exists.\r\n", outputFile);
-            SYS_FS_FileClose(fileHandle);
-            return;
-        }
-
-        // »õ ÆÄÀÏ »ý¼º
-        SYS_FS_HANDLE createFile = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_WRITE);
-        if (createFile == SYS_FS_HANDLE_INVALID) {
-            printf("Error: Failed to create new output file!\r\n");
-            return;
-        }
-        SYS_FS_FileClose(createFile);
-        printf("New output file initialized: %s\r\n", outputFile);
-
-        while (1) {
-            SYS_FS_HANDLE inFile = SYS_FS_FileOpen(inputFile, SYS_FS_FILE_OPEN_READ);
-            if (inFile == SYS_FS_HANDLE_INVALID) {
-                printf("Failed to open input file\r\n");
-                decompressionFailed = true;
-                break;
-            }
-
-            SYS_FS_FileSeek(inFile, offset, SYS_FS_SEEK_SET);
-            int compressedSize;
-            int bytesRead = SYS_FS_FileRead(inFile, &compressedSize, sizeof(compressedSize));
-
-            if (bytesRead == 0) {
-                printf("\r\nEOF reached.\r\n");
-                SYS_FS_FileClose(inFile);
-                break;
-            } else if (bytesRead != sizeof(compressedSize)) {
-                printf("\r\nError: Unexpected end of file or read error (bytesRead = %d)\r\n", bytesRead);
-                SYS_FS_FileClose(inFile);
-                decompressionFailed = true;
-                break;
-            }
-
-            if (compressedSize <= 0 || compressedSize > BLOCK_SIZE) {
-                printf("Error: Invalid compressed block size %d at offset %d!\r\n", compressedSize, offset);
-                SYS_FS_FileClose(inFile);
-                decompressionFailed = true;
-                break;
-            }
-
-            int readBytes = SYS_FS_FileRead(inFile, compressedBuffer, compressedSize);
-            SYS_FS_FileClose(inFile);
-
-            if (readBytes != compressedSize) {
-                printf("Error: Expected %d bytes but read %d bytes at block %d\r\n",
-                       compressedSize, readBytes, blockCount);
-                decompressionFailed = true;
-                break;
-            }
-
-            SYS_INT_Disable();
-            int decompressedSize = LZ4_decompress_safe(compressedBuffer, outputBuffer, compressedSize, MAX_DECOMPRESSED_SIZE);
-            SYS_INT_Enable();
-
-            if (decompressedSize < 0) {
-                printf("Decompression failed at block %d!\r\n", blockCount);
-                decompressionFailed = true;
-                break;
-            }
-
-            SYS_FS_HANDLE outFile = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_APPEND);
-            if (outFile != SYS_FS_HANDLE_INVALID) {
-                SYS_FS_FileWrite(outFile, outputBuffer, decompressedSize);
-                SYS_FS_FileSync(outFile);
-                SYS_FS_FileClose(outFile);
-            } else {
-                printf("Failed to open output file\r\n");
-                decompressionFailed = true;
-                break;
-            }
-
-            printf("/");
-            blockCount++;
-            offset += sizeof(compressedSize) + compressedSize;
-        }
-
-        // ?? µðÄÚµù ½ÇÆÐ ½Ã ÆÄÀÏ »èÁ¦ (Àç½Ãµµ)
-        if (decompressionFailed) {
-            printf("Decompression failed. Deleting output file: %s\r\n", outputFile);
-
-            for (i = 0; i < 4; i++) {
-                SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
-                if (fileHandle != SYS_FS_HANDLE_INVALID) {
-                    SYS_FS_FileClose(fileHandle);
-                }
-
-                if (SYS_FS_FileDirectoryRemove(outputFile) == SYS_FS_RES_SUCCESS) {
-                    printf("Deleted output file: %s\r\n", outputFile);
-                    break;
-                } else {
-                    printf("Warning: Failed to delete output file %s. Retrying...\r\n", outputFile);
-                    delay_m(100);  // 100ms ´ë±â ÈÄ Àç½Ãµµ
-                }
-            }
-
-            // »èÁ¦ ÈÄ È®ÀÎ
-            SYS_FS_FSTAT fileStat;
-            if (SYS_FS_FileStat(outputFile, &fileStat) == SYS_FS_RES_SUCCESS) {
-                printf("Error: File still exists after deletion: %s\r\n", outputFile);
-                return;
-            }
-
-            retry_cnt++;
-
-            if (retry_cnt >= 2) {
-                printf("Retry limit exceeded. Aborting.\r\n");
-                return;
-            }
-
-            printf("Error encountered. Restarting decompression... (Retry %d)\r\n", retry_cnt);
-        } else {
-            printf("\r\nDecompression complete: %s\r\n", outputFile);
-            break;
-        }
-
-    } while (retry_cnt < 2);
-}
-
-#else
 
 static char compressedBuffer[BLOCK_SIZE];
 static char outputBuffer[MAX_DECOMPRESSED_SIZE];
@@ -8282,7 +8151,7 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile)
         offset = 0;
         decompressionFailed = false;
 
-        /* ì´ë¯¸ TXT íŒŒì¼ì´ ìžˆìœ¼ë©´ ìŠ¤í‚µ */
+        /* TXT have skip */
         /*SYS_FS_HANDLE fileHandle = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_READ);
         if (fileHandle != SYS_FS_HANDLE_INVALID) {
             printf("Skipped: %s already exists.\r\n", outputFile);
@@ -8290,7 +8159,7 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile)
             return;
         }*/
 
-        /* ì¶œë ¥ TXT íŒŒì¼ ìƒì„± */
+        /* output TXT file make */
         SYS_FS_HANDLE createFile = SYS_FS_FileOpen(outputFile, SYS_FS_FILE_OPEN_WRITE);
         if (createFile == SYS_FS_HANDLE_INVALID) {
             printf("Error: Failed to create output TXT file!\r\n");
@@ -8368,7 +8237,7 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile)
             offset += sizeof(compressedSize) + compressedSize;
         }
 
-        /* ================= ì‹¤íŒ¨ ì²˜ë¦¬ ================= */
+        /* ================= Fail Process ================= */
         if (decompressionFailed) {
             printf("Decompression failed. Removing TXT file: %s\r\n", outputFile);
 
@@ -8389,11 +8258,11 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile)
 
             printf("Retry decompression... (%d)\r\n", retry_cnt);
         }
-        /* ================= ì„±ê³µ ì²˜ë¦¬ ================= */
+        /* ================= Success Process ================= */
         else {
             printf("\r\nDecompression complete: %s\r\n", outputFile);
 
-            /* ì„±ê³µ ì‹œ ì›ë³¸ LZ4 íŒŒì¼ ì‚­ì œ */
+            /* LZ4 file del at Ok */
             for (i = 0; i < 4; i++) {
                 if (SYS_FS_FileDirectoryRemove(inputFile) == SYS_FS_RES_SUCCESS) {
                     printf("LZ4 source file deleted: %s\r\n", inputFile);
@@ -8408,12 +8277,15 @@ void decompressLZ4_SD(const char* inputFile, const char* outputFile)
     } while (retry_cnt < 2);
 }
 
+char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
+{
+#if FPGA_SDC
+
+	FPGA_ImgReadyToBeSavedForBMP(BMPsel, INCREMENT);
+    return PASS;    
 
 #endif
 
-#if 0
-char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
-{
     static unsigned short k=0;
 	unsigned int i,j;
     char tx_string[25] = {0, };   
@@ -8438,7 +8310,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
 
     if(!(GlobalSetting1.gm_RGB_H_SIZE % 4))
     { 
-		if(GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 		{
 			DrawSize2 =  ModeInfo.png_DRAWIMGSIZE * 6; // 191002 pty 14196600;
 			DrawSize3 = DrawSize2;
@@ -8454,7 +8326,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
     }
 	else if((GlobalSetting1.gm_RGB_H_SIZE %4) && !(GlobalSetting1.gm_RGB_H_SIZE %2)) // 220714
 	{
-		if(GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 		{
 			DrawSize2 = (ModeInfo.png_DRAWIMGSIZE *  6) + 15;
 	        DrawSize3 = DrawSize2;
@@ -8470,7 +8342,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
     }
     else  // 220714
     { 
-		if(GlobalSetting1.gm_MODEL_TYPE == 99)
+		if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 		{
 			DrawSize2 = (ModeInfo.png_DRAWIMGSIZE *  6);
 			DrawSize3 = DrawSize2;
@@ -8495,10 +8367,11 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
     dmaVal.send_Len = 0;
     dmaVal.addr_Count = 0;
     
-	FPGA_ImgReadyToBeSavedForBMP(INCREMENT);
+	//FPGA_ImgReadyToBeSavedForBMP(INCREMENT);
+	FPGA_ImgReadyToBeSavedForBMP(BMPsel, INCREMENT);
 	if(GlobalSetting1.gm_RGB_H_SIZE > 700)	delay_m(5);//00);
 	
-	if(GlobalSetting1.gm_MODEL_TYPE == 99)
+	if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 	{
 		sprintf(tx_string,"/mnt/myDrive/%d.txt",BMPsel);  
 	}
@@ -8512,7 +8385,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
 
 	if(appData.fileHandle == SYS_FS_HANDLE_INVALID)
 	{
-		FPGA_Pat_Dummy();
+		//FPGA_Pat_Dummy(); // 260224 initial not end
 
 		printf("\nBMP load Error .default PATTERN DISP\n\r");
 		return FALSE;
@@ -8527,7 +8400,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
             {
                 if(dmaVal.addr_Count < (DrawSize2 - Count)) //SYS_FS_FileEOF(appData.fileHandle) != true)
                 {    
-                	if(GlobalSetting1.gm_MODEL_TYPE == 99)
+                	if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 					{
 	                    INT32 retValue = SYS_FS_FileSeek(appData.fileHandle, dmaVal.addr_Count , SYS_FS_SEEK_SET);
 	                    bytesRead = SYS_FS_FileRead(appData.fileHandle, (void *)appData.data, Count);
@@ -8550,7 +8423,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
                 else
                 {  
                     printf("\n\r");
-					if(GlobalSetting1.gm_MODEL_TYPE == 99)
+					if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 					{
 						INT32 retValue = SYS_FS_FileSeek(appData.fileHandle, (DrawSize3 - etc_Count), SYS_FS_SEEK_SET);
 					}
@@ -8624,7 +8497,7 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
 				{
 					PMP_WRITE_MULTI(VIDEO_DATA_FIFO_Addr, DMABuff, dmaVal.send_Len);
 				}
-				if(GlobalSetting1.gm_MODEL_TYPE != 99)
+				if(GlobalSetting1.gm_MODEL_TYPE != m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 				{
 					if((ModeInfo.gm_DRAWIMGSIZE * 4) % 32)
 					{
@@ -8698,13 +8571,6 @@ char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
     //dmaVal.send_Len = 0;
     return PASS;    
 }
-#else
-char FPGA_BMPSave(unsigned int BMPsel, unsigned int INCREMENT)
-{   
-	FPGA_ImgReadyToBeSavedForBMP(BMPsel, INCREMENT);
-    return PASS;    
-}
-#endif
 
 char LZ4_BMPSave(unsigned int BMPsel)
 {
@@ -8713,7 +8579,7 @@ char LZ4_BMPSave(unsigned int BMPsel)
 
 	sprintf(tx_string,"/mnt/myDrive/%d.lz4",BMPsel);   
 
-	if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE)
+	if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE)
 	{
 		sprintf(tx_string2,"/mnt/myDrive/%d.txt",BMPsel); 
 	}
@@ -8730,51 +8596,6 @@ char LZ4_BMPSave(unsigned int BMPsel)
 
     return PASS;    
 }
-
-#if 0
-
-void SD_SaveBMP_DEL(char bmp_num)
-{
-    short i;
-	char tx_string[25] = {0, };
-
-    if(bmp_num == 0){
-        for(i=0; i< MAX_DOWN_BMP_SIZE; i++)
-        {
-        	if(GlobalSetting1.gm_MODEL_TYPE == 25 || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE){
-				sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
-			}
-        	else if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
-			{
-				sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 
-			}
-			else{
-            	sprintf(tx_string,"/mnt/myDrive/%d.bmp",i);   
-        	}
-            SYS_FS_FileDirectoryRemove(tx_string);
-            printf("File DEL : %s \n\r", tx_string);
-        }
-        AckPackSend(1); 
-    }
-    else
-    {
-		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
-	    {
-			sprintf(tx_string,"/mnt/myDrive/%d.txt",bmp_num); 
-		}
-		else if(GlobalSetting1.gm_MODEL_TYPE == 25 || GlobalSetting1.gm_Image_Type == D_LZ4_TYPE){
-			sprintf(tx_string,"/mnt/myDrive/%d.lz4",bmp_num); 
-		}
-		else{
-       		sprintf(tx_string,"/mnt/myDrive/%d.bmp",bmp_num);   
-		}
-        SYS_FS_FileDirectoryRemove(tx_string);
-        printf("File DEL : %s \n\r", tx_string);
-        AckPackSend(1);
-    }
-}
-
-#else 
 
 bool SD_DeleteFileAndCheck(const char* path)
 {
@@ -8799,12 +8620,13 @@ void SD_SaveBMP_DEL(char bmp_num)
 	bool result; 
 
 	printf("f_SD_MEM_DEL Start \n\r");
-	
+#if FPGA_SDC	
 	SD_SEL_LOW; // MCU <----> SD CARD
 	delay_m(20); 
 	
 	SDC_MCU_Task(); 
 	printf("MCU_SD_STATUS2 : %d \n\r", GlobalSetting1.MCU_SD_STATUS); 
+#endif
 	
 	for (i = 0; i < 120; i++) 
 	{ 
@@ -8831,7 +8653,6 @@ void SD_SaveBMP_DEL(char bmp_num)
 	AckPackSend(1); 
 }
 
-#endif
 
 void SD_SaveBMP_LIST(char *nlist)
 {
@@ -8840,13 +8661,15 @@ void SD_SaveBMP_LIST(char *nlist)
 	char tx_string[25] = {0, };
     char List[MAX_DOWN_BMP_SIZE] = {0, };
 
+#if FPGA_SDC
 	SD_SEL_LOW; // MCU <----> SD CARD
 	delay_m(20);
 
 	SDC_MCU_Task(); 
 
 	printf("gm_Image_Type : %d \n\r", GlobalSetting1.gm_Image_Type);
-	
+#endif
+
     memset(nlist, 0 , MAX_DOWN_BMP_SIZE);
 
     for(i=1; i< MAX_DOWN_BMP_SIZE; i++)
@@ -8855,7 +8678,7 @@ void SD_SaveBMP_LIST(char *nlist)
 		{
 			sprintf(tx_string,"/mnt/myDrive/%d.lz4",i); 
 		}
-		else if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97 || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
+		else if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X || GlobalSetting1.gm_Image_Type == D_TXT_TYPE)
 		{
 			sprintf(tx_string,"/mnt/myDrive/%d.txt",i); 		
 		}
@@ -8879,7 +8702,9 @@ void SD_SaveBMP_LIST(char *nlist)
 	GlobalSetting1.gm_Image_Type = D_TXT_TYPE;
 	
     memcpy(nlist , List, MAX_DOWN_BMP_SIZE);   	
+#if FPGA_SDC
 	printf("MCU_SD_STATUS2 : %d \n\r", GlobalSetting1.MCU_SD_STATUS);
+#endif
 }
 
 
@@ -12344,7 +12169,7 @@ char ETH_DATA_Write(unsigned char* pBuff, unsigned int Count)
 
 	if(!(GlobalSetting1.gm_RGB_H_SIZE % 4))
     { 
-		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+		if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 		{
 			DrawSize2 = ModeInfo.gm_DRAWIMGSIZE * 6; // 191002 pty
 		}
@@ -12355,7 +12180,7 @@ char ETH_DATA_Write(unsigned char* pBuff, unsigned int Count)
     }
 	else if((GlobalSetting1.gm_RGB_H_SIZE %4) && !(GlobalSetting1.gm_RGB_H_SIZE %2)) // 220714
 	{
-		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+		if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 		{
 			DrawSize2 = (ModeInfo.gm_DRAWIMGSIZE * 6) + (ModeInfo.gm_V_SIZE * 2);
 		}
@@ -12366,7 +12191,7 @@ char ETH_DATA_Write(unsigned char* pBuff, unsigned int Count)
     }
     else  // 220714
     {
-		if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+		if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 		{
 			DrawSize2 = (ModeInfo.gm_DRAWIMGSIZE * 6) + (ModeInfo.gm_V_SIZE * 1);
 		}
@@ -12445,11 +12270,13 @@ void SavePATAndBMP(void)
 	unsigned int i;
 	unsigned int	ETC;
 
+#if FPGA_SDC
 	SD_SEL_HIGH; // FPGA <----> SD CARD
 	delay_m(20);
 	printf("FPGA_SD_STATUS : %d \n\r", GlobalSetting1.FPGA_SD_STATUS);
+#endif
 		
-    if(GlobalSetting1.FPGA_SD_STATUS != F_SDC_NO)
+    if(GlobalSetting1.FPGA_SD_STATUS != F_SDC_NO || GlobalSetting1.SDCARD_STATUS != SDC_NO)
     {  
         for(i = 0; i < ModeInfo.gm_BMP_NUM; i++)
         {

@@ -40,9 +40,12 @@ void BOOT_Service(void)
 	switch(GlobalSetting1.VIDEO_STATUS)
 	{
 		case VIDEO_INIT:
-		{   
+		{ 
+#if FPGA_SDC
 			Port_Init();     // 260107
 			VARIABLE_Init(); // 260107
+#endif
+
 			GlobalSetting1.VIDEO_STATUS = VIDEO_BOOT_WAIT;            
 			GlobalSetting1.FPGA_STATUS = FPGA_STATE_VERSION; 
 			break;

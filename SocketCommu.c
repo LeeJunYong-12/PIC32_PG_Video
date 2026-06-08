@@ -201,7 +201,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			printf("m_MODEL_NAME  Para1=%d, Para2=%d \r\n", pPacket->Para1, pPacket->Para2);	
 			GlobalSetting1.gm_MODEL_TYPE=pPacket->Para1;
 			GlobalSetting1.gm_MODEL_NAME=pPacket->Para2;
-			if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 			{
 				PMP_WRITE_ONE(Wr_DATA_10BIT, 0x01);	
 			}
@@ -569,7 +569,9 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			F_GPIO3_LOW;
 			delay_m(1000);
 		#endif
+#if FPGA_SDC		
 			SD_SEL_HIGH;
+#endif
 			Mipi_Macro_Init();
 			delay_m(200); //100
 			GlobalSetting1.FPGA_STATUS = FPGA_STATE_INIT;
@@ -612,6 +614,11 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 		{  
 			unsigned int i;
 			printf("f_GET_BMP_LIST \r\n");
+
+#if FPGA_SDC
+			appData.fileHandle = SYS_FS_Mount("/dev/mmcblka1","/mnt/myDrive", FAT, 0, NULL);
+			delay_m(500);
+#endif
 
 			lpBMP_LIST_PACKET pPacket = (lpBMP_LIST_PACKET) pBuff;
 
@@ -907,10 +914,9 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			PMP_WRITE_ONE(Wr_COORDINATE_X, pPacket->COORD_X[i]);  
 			PMP_WRITE_ONE(Wr_COORDINATE_Y, pPacket->COORD_Y[i]); 
 
-			PMP_WRITE_ONE(Wr_COORDINATE_COLOR_R, (pPacket->COORD_R[i] * 2 + 513));  
-			PMP_WRITE_ONE(Wr_COORDINATE_COLOR_G, (pPacket->COORD_G[i] * 2 + 513));  
-			PMP_WRITE_ONE(Wr_COORDINATE_COLOR_B, (pPacket->COORD_B[i] * 2 + 513)); 
-
+			PMP_WRITE_ONE(Wr_COORDINATE_COLOR_R, (pPacket->COORD_R[i] << 2));  //(pPacket->COORD_R[i] * 2 + 513)); 
+			PMP_WRITE_ONE(Wr_COORDINATE_COLOR_G, (pPacket->COORD_G[i] << 2));  //(pPacket->COORD_G[i] * 2 + 513));
+			PMP_WRITE_ONE(Wr_COORDINATE_COLOR_B, (pPacket->COORD_B[i] << 2));  //(pPacket->COORD_B[i] * 2 + 513)); 
 			PMP_WRITE_ONE(Wr_COORDINATE_CONT, i);  
 			delay_u(10);
 			//printf("COORD_X[%d]: %d, COORD_Y[%d]: %d\n\r",i,pPacket->COORD_X[i], i, pPacket->COORD_Y[i]);
@@ -939,12 +945,22 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 	}
 	else if(pHeader->PacketType == E_COORDINATE_PACKET )
 	{ 
+	
+#if 0
+        if(ModeInfo.gm_H_SIZE == 540 && ModeInfo.gm_V_SIZE == 2340) // D846
+        else if(ModeInfo.gm_H_SIZE == 585 && ModeInfo.gm_V_SIZE == 2532) // D847 & D852
+        else if(ModeInfo.gm_H_SIZE == 645 && ModeInfo.gm_V_SIZE == 2796) // D854
+        else
+        	ColorSetting.gm_DISTANCE_XY = 100;
+		    ColorSetting.gm_WIDTH_SIZE = 20;
+#endif
+
 		lpCOORDINATE_PACKET pPacket = (lpCOORDINATE_PACKET)pBuff;
 
 		if(GlobalSetting1.gm_RGB_H_SIZE < 700)
 		{
 			PMP_WRITE_ONE(Wr_DISTANCE_XY, GlobalSetting2.PIXEL_XY_SIZE);	
-			PMP_WRITE_ONE(Wr_WIDTH_SIZE, 0); // 1 pixel
+			PMP_WRITE_ONE(Wr_WIDTH_SIZE, 1); // 1 pixel
 		}
 		else
 		{
@@ -1124,7 +1140,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_W); 
 
 			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 31); // hv
-			if(GlobalSetting1.gm_MODEL_TYPE == 99)			PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // 0 => vertical    // D994
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X)		PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);  // 0 => vertical    // D994
 			else											PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);  // 1 => horizontal // D970
 
 			printf("image.circle3 : (CIRCLE_Y4)%d, (CIRCLE_W)%d\r\n",pPacket->CIRCLE_Y4, pPacket->CIRCLE_W);
@@ -2114,7 +2130,7 @@ void Test_Video_mode(unsigned int p1, unsigned int p2, unsigned int p3)
 
 void VersionSend(void)
 {
-    unsigned char appVersioin[4] = {26, 1, 6, 0}; // flash erase & write verify change
+    unsigned char appVersioin[4] = {26, 2, 24, 0}; // flash erase & write verify change
     
 	uint8_t szVersion[20] = {"Video Board"};
 	uint8_t szBuff[sizeof(VER_PACKET)];

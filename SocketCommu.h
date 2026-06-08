@@ -430,6 +430,19 @@ typedef struct _OC_CIRCLE6_PACKET_
 	
 } OC_CIRCLE6_PACKET, *lpOC_CIRCLE6_PACKET;
 
+typedef struct _X_PTN_PACKET_
+{
+	unsigned char	type;		// 100
+	unsigned char	flag;
+	char			FunName[20];	
+
+	int 	X_COLOR_R;
+	int 	X_COLOR_G;
+	int 	X_COLOR_B;
+
+	unsigned short 	X_PTN_SW;
+	
+} X_PACKET, *lpX_PACKET;
 
 
 POCB_VariableSettingType1		PocbSetting;

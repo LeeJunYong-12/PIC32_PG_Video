@@ -181,7 +181,7 @@ void Mipi_Macro_Init(void)
     	GlobalSetting1.gm_RGB_H_SIZE = ModeInfo.gm_H_SIZE;
 	}
 	
-    if(GlobalSetting1.gm_MODEL_TYPE == 99 || GlobalSetting1.gm_MODEL_TYPE == 97)
+    if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
 	{
 		GlobalSetting1.gm_PNG_H_SIZE = (GlobalSetting1.gm_RGB_H_SIZE / 1.6);
 		ModeInfo.png_DRAWIMGSIZE = GlobalSetting1.gm_PNG_H_SIZE * ModeInfo.gm_V_SIZE;	
