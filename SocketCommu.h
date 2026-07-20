@@ -66,6 +66,7 @@ enum PACKET_TYPE{
 	E_CIRCLE_PTN_PACKET = 104,
 	E_CIRCLE6_PTN_PACKET = 105,
 	E_CIRCLE7_PTN_PACKET = 106,
+	E_STRIPE_BOX_PTN_PACKET = 109,
 	E_OC_VI_PACKET = 199,
 	E_OC_TEMP_PACKET = 200,
 };
@@ -422,13 +423,28 @@ typedef struct _OC_CIRCLE6_PACKET_
 	unsigned char	flag;
 	char			FunName[20];	
 
-	int 	CIRCLE_COLOR[15]; // r0g0b0 ~ r4g4b4 : 3 * 5
-	int     CIRCLE_XY[4];     // x0,y0,rx0,ry0
-	int 	CIRCLE_W[4];      // w00,w01,w10,w11
-	int 	CIRCLE_HV[2];     // h/v, h/v
-	int     CIRCLE_Y1;        // y1
+	int 	CIRCLE_COLOR[15]; 	// r0g0b0 ~ r4g4b4 : 3 * 5
+	int     CIRCLE_XY[4];     	// x0,y0,rx0,ry0
+	int 	CIRCLE_W[4];      	// w00,w01,w10,w11
+	int 	CIRCLE_HV[2];     	// h/v, h/v
+	int     CIRCLE_Y1;        	// y1
 	
 } OC_CIRCLE6_PACKET, *lpOC_CIRCLE6_PACKET;
+
+typedef struct _OC_STRIPE_BOX_PACKET_
+{
+	unsigned char	type;				
+	unsigned char	flag;
+	char			FunName[20];
+
+	int 	BOX_RGB[3]; 	  		
+	int     BG_RGB[3];				
+	int 	POS_BOX_LEFT_TOP[2];      	
+	int 	POS_BOX_RIGHT_BOT[2];    	
+	int		EVEN_ODD;
+	
+} OC_STRIPE_BOX_PACKET, *lpOC_STRIPE_BOX_PACKET;
+
 
 typedef struct _X_PTN_PACKET_
 {

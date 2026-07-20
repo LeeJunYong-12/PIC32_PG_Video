@@ -175,8 +175,8 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			AckPackSend(1);
 		}      
 		else if (!strcmp( pPacket->FunName , "m_DSP_INF" ))
-		{
-			//printf("m_DSP_INF  Para1=%d \r\n",  pPacket->Para1 );       
+		{		
+			//printf("m_DSP_INF  Para1=%d \r\n",  pPacket->Para1 );  
 			AckPackSend(1);
 		}  
 		else if (!strcmp( pPacket->FunName , "m_RGB_MODE" ))
@@ -201,14 +201,14 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			printf("m_MODEL_NAME  Para1=%d, Para2=%d \r\n", pPacket->Para1, pPacket->Para2);	
 			GlobalSetting1.gm_MODEL_TYPE=pPacket->Para1;
 			GlobalSetting1.gm_MODEL_NAME=pPacket->Para2;
-			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
-			{
+			//if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
+			//{
 				PMP_WRITE_ONE(Wr_DATA_10BIT, 0x01);	
-			}
-			else
-			{
-				PMP_WRITE_ONE(Wr_DATA_10BIT, 0x00);	
-			}
+			//}
+			//else
+			//{
+				//PMP_WRITE_ONE(Wr_DATA_10BIT, 0x00);	
+			//}
 			
 			AckPackSend(1);
 		}    
@@ -541,7 +541,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);	
 			PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle3 disable
 			
-			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0x20);  
+			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0x20);
 			PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle6 disable
 		
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box Num	
@@ -553,7 +553,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 
 			printf("f_VARIABLE_PAT : R(%d), G(%d), B(%d)\r\n",GlobalSetting1.gmVARGRed, GlobalSetting1.gmVARGGreen, GlobalSetting1.gmVARGBlue);
 
-            FPGA_Wr_PATTERN_TYPE_SEL_REG(0);
+            FPGA_Wr_PATTERN_TYPE_SEL_REG(0); //?
             //PMP_WRITE_ONE(Wr_PHYSICAL_PATTERN_NUM_REG, 684);
 			FPGA_Wr_PHYSICAL_PATTERN_NUM(684);
             New_GRAY_LEVEL_Control(GlobalSetting1.gmVARGRed,GlobalSetting1.gmVARGGreen,GlobalSetting1.gmVARGBlue);
@@ -1227,6 +1227,149 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			
 			PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0x20);  
 			PMP_WRITE_ONE(Wr_CIRCLE_EN, 1);    //Circle enable
+	   	}
+		AckPackSend(1);
+	}
+	else if(pHeader->PacketType == E_STRIPE_BOX_PTN_PACKET)
+	{ 
+		lpOC_STRIPE_BOX_PACKET pPacket = (lpOC_STRIPE_BOX_PACKET)pBuff;	
+		int box_rgb = 0;
+
+		PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0);  
+		PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle3 disable
+
+		PMP_WRITE_ONE(Wr_CIRCLE_INDEX, 0x20);  
+		PMP_WRITE_ONE(Wr_CIRCLE_EN, 0);    //Circle6 disable
+
+		PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box Num	
+		PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 0);	 //Box disable
+
+		FPGA_Wr_PATTERN_TYPE_SEL_REG(PAT_TYPE);
+		FPGA_Wr_PHYSICAL_PATTERN_NUM(684);
+		New_GRAY_LEVEL_Control(255, 255, 255);
+		PMP_WRITE_ONE(Wr_DISPLAY_START, 1);
+		
+		if(strcmp(pPacket->FunName, "image.stripe.box") == 0)
+	    {												
+			if(pPacket->BOX_RGB[0] >= 0 && pPacket->BOX_RGB[0] <= 255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[0] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << 2;
+			
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x00);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb);
+			}
+			else if(pPacket->BOX_RGB[0] >= 1000 && pPacket->BOX_RGB[0] <= 1255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[0] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << 2;
+				
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x00);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+			else if(pPacket->BOX_RGB[0] >= 2000 && pPacket->BOX_RGB[0] <= 2255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[0] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << 2;
+				
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x00);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+
+			box_rgb = 0;
+
+			if(pPacket->BOX_RGB[1] >= 0 && pPacket->BOX_RGB[1] <= 255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[1] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << 2;
+			
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x01);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+			else if(pPacket->BOX_RGB[1] >= 1000 && pPacket->BOX_RGB[1] <= 1255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[1] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << 2;
+				
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x01);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+			else if(pPacket->BOX_RGB[1] >= 2000 && pPacket->BOX_RGB[1] <= 2255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[1] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << 2;
+				
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x01);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+
+			box_rgb = 0;
+
+			if(pPacket->BOX_RGB[2] >= 0 && pPacket->BOX_RGB[2] <= 255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[2] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << 2;
+			
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x02);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+			else if(pPacket->BOX_RGB[2] >= 1000 && pPacket->BOX_RGB[2] <= 1255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[2] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << 2;
+				
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x02);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+			else if(pPacket->BOX_RGB[2] >= 2000 && pPacket->BOX_RGB[2] <= 2255)
+			{
+				box_rgb |= (pPacket->BOX_RGB[2] / 1000) << 10;
+				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << 2;
+				
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x02);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
+			}
+			
+			if(pPacket->BOX_RGB[0] >= 1000 || pPacket->BOX_RGB[1] >= 1000 || pPacket->BOX_RGB[2] >= 1000)
+			{
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x03);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, pPacket->BG_RGB[0] & 0x3FF); 
+
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x04);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, pPacket->BG_RGB[1] & 0x3FF); 
+
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x05);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, pPacket->BG_RGB[2] & 0x3FF); 
+			}
+			else
+			{
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x03);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[0] & 0x3FF) << 2); 
+
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x04);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[1] & 0x3FF) << 2); 
+
+				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x05);
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[2] & 0x3FF) << 2); 
+			}
+			
+			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x06);
+			PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->POS_BOX_LEFT_TOP[0] & 0xFFFF)); 
+
+			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x07);
+			PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->POS_BOX_LEFT_TOP[1] & 0xFFFF)); 
+
+			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x08);
+			PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->POS_BOX_RIGHT_BOT[0] & 0xFFFF)); 
+
+			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x09);
+			PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->POS_BOX_RIGHT_BOT[1] & 0xFFFF)); 
+
+			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x0A);
+			PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->EVEN_ODD & 0x01)); 
+
+			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box enable
+			PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 1);    //Box Num   (b0000 0001)
 	   	}
 		AckPackSend(1);
 	}
@@ -2130,7 +2273,8 @@ void Test_Video_mode(unsigned int p1, unsigned int p2, unsigned int p3)
 
 void VersionSend(void)
 {
-    unsigned char appVersioin[4] = {26, 2, 24, 0}; // flash erase & write verify change
+	unsigned char appVersioin[4] = {26, 7, 1, 0}; 		// Add stripe box pattern
+    //unsigned char appVersioin[4] = {26, 2, 24, 0}; 	// flash erase & write verify change
     
 	uint8_t szVersion[20] = {"Video Board"};
 	uint8_t szBuff[sizeof(VER_PACKET)];

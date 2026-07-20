@@ -322,32 +322,32 @@
 
 
 //********************************* FPGA init addr define *****************************************
-#define Signal_Type_Addr         0x006A
-#define LVDS_Swap_Addr           0x00B4
-#define LVDS_Type_Addr           0x0074
-#define DIS_Sectoin_Addr         0x0084
-#define H_WIDTH_Addr             0x000A
-#define H_BackPORCH_Addr         0x000C
-#define H_Size_Addr              0x000E
-#define H_Max_Addr               0x0010
-#define V_WIDTH_Addr             0x0002
-#define V_BackPORCH_Addr         0x0004
-#define V_Size_Addr              0x0006
-#define V_Max_Addr               0x0008
-#define Sync_Polarity_Addr       0x006C
+#define Signal_Type_Addr         			0x006A
+#define LVDS_Swap_Addr          			0x00B4
+#define LVDS_Type_Addr           			0x0074
+#define DIS_Sectoin_Addr         			0x0084
+#define H_WIDTH_Addr             			0x000A
+#define H_BackPORCH_Addr         			0x000C
+#define H_Size_Addr             			0x000E
+#define H_Max_Addr              			0x0010
+#define V_WIDTH_Addr             			0x0002
+#define V_BackPORCH_Addr        			0x0004
+#define V_Size_Addr              			0x0006
+#define V_Max_Addr               			0x0008
+#define Sync_Polarity_Addr       			0x006C
 
 #if 0 // by dsoh 2021.01.11 fpga in video bd don't use now...
 
-#define Wr_START_ADDR_H          0x0024
-#define Wr_START_ADDR_L          0x0026
-#define Wr_END_ADDR_H            0x0028
-#define Wr_END_ADDR_L            0x002A
+#define Wr_START_ADDR_H          			0x0024
+#define Wr_START_ADDR_L         			0x0026
+#define Wr_END_ADDR_H            			0x0028
+#define Wr_END_ADDR_L           			0x002A
 
-#define Wr_TOUCH_DRAW_X_AXIS          	0x0024
-#define Wr_TOUCH_DRAW_Y_AXIS          	0x0026
+#define Wr_TOUCH_DRAW_X_AXIS          		0x0024
+#define Wr_TOUCH_DRAW_Y_AXIS          		0x0026
 
-#define Wr_RESERVED_ADDRESS1        	0x0028
-#define Wr_RESERVED_ADDRESS2           	0x002A
+#define Wr_RESERVED_ADDRESS1        		0x0028
+#define Wr_RESERVED_ADDRESS2           		0x002A
 
 [INDEX SETTING]
 "000000" ¡æ X0,Y0,Box_Color1
@@ -361,165 +361,168 @@
 #endif
 
 
-#define PLLN_DATAL_Addr          	0x0060
-#define PLLN_DATAH_Addr          	0x0062
-#define PPL_CONTROL_Addr         	0x0066
-#define Wr_DISPLAY_START         	0x0068
+#define PLLN_DATAL_Addr          			0x0060
+#define PLLN_DATAH_Addr          			0x0062
+#define PPL_CONTROL_Addr         			0x0066
+#define Wr_DISPLAY_START         			0x0068
 
-#define FPGA_BOOTSTS_Addr        	0x002E
-#define FPGA_VERSION_Addr        	0x00BC
-#define PHY_PAT_NUM_Addr         	0x00AC
-#define PAT_TYPE_SEL_Addr         	0x00AE
-#define PHY_GRAY_LEV_Addr        	0x00B2
-#define Wr_FPGA_DATA_BIT_REG        0x00B6
-#define Wr_FPGA_1FrameData_Access   0x00B8
-#define GRAD_RATIO_Addr          	0x00BA
-#define EXP_NUM_Addr             	0x00BC
-#define X_WIDTH_Addr             	0x00C0
-#define Y_WIDTH_Addr             	0x00C2
-#define GRAD_CONTROL_Addr        	0x00C4
+#define FPGA_BOOTSTS_Addr        			0x002E
+#define FPGA_VERSION_Addr        			0x00BC
+#define PHY_PAT_NUM_Addr         			0x00AC
+#define PAT_TYPE_SEL_Addr         			0x00AE
+#define PHY_GRAY_LEV_Addr        			0x00B2
+#define Wr_FPGA_DATA_BIT_REG       			0x00B6
+#define Wr_FPGA_1FrameData_Access   		0x00B8
+#define GRAD_RATIO_Addr          			0x00BA
+#define EXP_NUM_Addr             			0x00BC
+#define X_WIDTH_Addr             			0x00C0
+#define Y_WIDTH_Addr             			0x00C2
+#define GRAD_CONTROL_Addr        			0x00C4
 
-#define   Re_READ_VERSION_REG  	 	0x00BC
+#define   Re_READ_VERSION_REG  	 			0x00BC
 
-#define VFLICKER_COUNT_Addr      	0x0086
-#define VFLICKER_R2_Addr         	0x008E
-#define VFLICKER_G2_Addr         	0x0090
-#define VFLICKER_B2_Addr         	0x0092
-#define VFLICKER_R1_Addr         	0x0088
-#define VFLICKER_G1_Addr         	0x008A
-#define VFLICKER_B1_Addr         	0x008C
+#define VFLICKER_COUNT_Addr      			0x0086
+#define VFLICKER_R2_Addr         			0x008E
+#define VFLICKER_G2_Addr         			0x0090
+#define VFLICKER_B2_Addr         			0x0092
+#define VFLICKER_R1_Addr         			0x0088
+#define VFLICKER_G1_Addr         			0x008A
+#define VFLICKER_B1_Addr         			0x008C
 
-#define CT_START_X_Addr          	0x00E0
-#define CT_START_Y_Addr          	0x00E2
-#define CT_END_X_Addr            	0x00E4
-#define CT_END_Y_Addr            	0x00E6
-#define CT_COLOR_SEL_Addr        	0x00E8
-#define CT_COLOR_IN_Addr         	0x00EE
-#define CT_COLOR_OUT_Addr        	0x00F0
+#define CT_START_X_Addr          			0x00E0
+#define CT_START_Y_Addr          			0x00E2
+#define CT_END_X_Addr            			0x00E4
+#define CT_END_Y_Addr            			0x00E6
+#define CT_COLOR_SEL_Addr        			0x00E8
+#define CT_COLOR_IN_Addr         			0x00EE
+#define CT_COLOR_OUT_Addr        			0x00F0
 
-#define H_GRAD_STROBE_Addr       	0x00D0
-#define H_GRAD_DATA_Addr         	0x00D4
-#define H_GRAD_DATA_SECTION_Addr 	0x00D6
-#define VGRAD_BLOCK_COUNT_Addr   	0x0094
-#define Block_Color1             	0x0096
-#define Block_Color2             	0x0098
-#define Block_Width              	0x00DA
-#define H_GRAD_DATA2_Addr        	0x00DC
-#define H_GRAD_DATA_SECTION2_Addr  	0x00DE
-#define CHECK_Height_Addr           0x00F2
-#define CHECK_Width_Addr            0x00F4
-#define CHECK_FirColor_Addr         0x00F6
-#define CHECK_SecColor_Addr         0x00F8
-#define CHECK_NumBox_Addr           0x00FA
+#define H_GRAD_STROBE_Addr       			0x00D0
+#define H_GRAD_DATA_Addr         			0x00D4
+#define H_GRAD_DATA_SECTION_Addr 			0x00D6
+#define VGRAD_BLOCK_COUNT_Addr   			0x0094
+#define Block_Color1             			0x0096
+#define Block_Color2             			0x0098
+#define Block_Width              			0x00DA
+#define H_GRAD_DATA2_Addr        			0x00DC
+#define H_GRAD_DATA_SECTION2_Addr  			0x00DE
+#define CHECK_Height_Addr           		0x00F2
+#define CHECK_Width_Addr            		0x00F4
+#define CHECK_FirColor_Addr         		0x00F6
+#define CHECK_SecColor_Addr         		0x00F8
+#define CHECK_NumBox_Addr           		0x00FA
 
-#define Block_Color3             0x00C6
-#define Block_Color4             0x00C8
-#define Block_Color5             0x00CA
-#define Block_Color6             0x00CC
-#define Block_Color7             0x00CE
-#define Block_Color8             0x00D8
+#define Block_Color3             			0x00C6
+#define Block_Color4             			0x00C8
+#define Block_Color5             			0x00CA
+#define Block_Color6             			0x00CC
+#define Block_Color7             			0x00CE
+#define Block_Color8             			0x00D8
 
-#define WRITE_START_H_Addr       0x001A
-#define WRITE_START_L_Addr       0x001E
-#define WRITE_END_H_Addr         0x0020
-#define WRITE_END_L_Addr         0x0022
-#define VIDEO_DATA_FIFO_Addr     0x0030
-#define WRITE_CONTROL_Addr       0x0042
+#define WRITE_START_H_Addr       			0x001A
+#define WRITE_START_L_Addr       			0x001E
+#define WRITE_END_H_Addr         			0x0020
+#define WRITE_END_L_Addr         			0x0022
+#define VIDEO_DATA_FIFO_Addr     			0x0030
+#define WRITE_CONTROL_Addr       			0x0042
 
-#define DISP_START_H_Addr        0x0012
-#define DISP_START_L_Addr        0x0014
-#define DISP_END_H_Addr          0x0016
-#define DISP_END_L_Addr          0x0018
+#define DISP_START_H_Addr        			0x0012
+#define DISP_START_L_Addr        			0x0014
+#define DISP_END_H_Addr          			0x0016
+#define DISP_END_L_Addr          			0x0018
 
-#define	ColorGrad				0x3FF
-#define  _FIFO_WRITE_ENABLE		0x2 //0x00000001//0x1 //BIT00
-#define  _FIFO_WRITE_START		0x1 //0x00000002//0x2 //BIT01
-#define  _FIFO_WRITE_DISABLE	0x0 //0x00000001//0x1 //BIT00
-#define  _FIFO_WRITE_END		0x0 //0x00000002//0x2 //BIT01
-#define  _FIFO_READ_ENABLE		0x2 //0x00000001//0x1 //BIT00
-#define  _FIFO_READ_START		0x1 //0x00000002//0x2 //BIT01
-#define  _FIFO_WRITE_H_BIT		0x4 //0x00000002//0x2 //BIT01
-
-#define 	Wr_EXTP0_NEWFPGA_REG    0x009A
-#define 	Wr_EXTP1_NEWFPGA_REG   	0x009C
-#define 	Wr_EXTP2_NEWFPGA_REG    0x009E
-#define 	Wr_EXTP3_NEWFPGA_REG    0x00A0
-#define 	Wr_EXTP4_NEWFPGA_REG    0x00A2
-#define 	Wr_EXTP5_NEWFPGA_REG    0x00A4
-#define 	Wr_EXTP6_NEWFPGA_REG    0x00A6
-#define 	Wr_EXTP7_NEWFPGA_REG    0x00A8
-
-#define     Wr_MOVIE_FUNC_Addr      0x00FC 
-#define     Wr_MOVIE_DSWAP_Addr     0x00FE
-
-#define     Wr_CPU_DATAL_Reg		0x0002	
-#define     Wr_CPU_DATAHr_Reg		0x0004
-#define     Wr_CPU_DATAHd_Reg		0x000C	
-
-#define     Wr_CPU_ReadOff_Reg		0x0006
-#define     Wr_CPU_ReadOn_Reg		0x000E
-#define     ExptForCPU_CONTROL		0x001E
-
-#define     Re_CPU_DATAL_Reg		0x0002	
-#define     Re_CPU_DATAHr_Reg		0x0004	
-#define     Re_CPU_DATAHd_Reg		0x000C	
+#define STRIPE_BOX_INDEX_Addr    			0x0080
+#define STRIPE_BOX_DATA_Addr     			0x0082
 
 
-#define 	Wr_INTERNAL_RUN_REG    			0x00AA
-#define 	Wr_PHYSICAL_PATTERN_NUM_REG   	0x00AC
-#define 	Wr_PATTERN_TYPE_SEL_REG   		0x00AE
-#define 	Re_INTERNAL_PAT_CON_Reg    		0x00B0
-#define 	Wr_PHYSICAL_GRAY_LEVEL_REG    	0x00B2
-#define 	Wr_LVDS_SWAP_REG   				0x00B4
-#define 	Wr_FPGA_DATA_BIT_REG    		0x00B6
-#define 	Wr_FPGA_1FrameData_Access    	0x00B8
+#define	ColorGrad							0x3FF
+#define	_FIFO_WRITE_ENABLE					0x2 //0x00000001//0x1 //BIT00
+#define _FIFO_WRITE_START					0x1 //0x00000002//0x2 //BIT01
+#define _FIFO_WRITE_DISABLE					0x0 //0x00000001//0x1 //BIT00
+#define _FIFO_WRITE_END						0x0 //0x00000002//0x2 //BIT01
+#define _FIFO_READ_ENABLE					0x2 //0x00000001//0x1 //BIT00
+#define _FIFO_READ_START					0x1 //0x00000002//0x2 //BIT01
+#define _FIFO_WRITE_H_BIT					0x4 //0x00000002//0x2 //BIT01
 
-#define     Wr_GRAY_RED_VALUE               0x006E
-#define     Wr_GRAY_GREEN_VALUE             0x0070
-#define     Wr_GRAY_BLUE_VALUE              0x0072
+#define Wr_EXTP0_NEWFPGA_REG    			0x009A
+#define Wr_EXTP1_NEWFPGA_REG   				0x009C
+#define Wr_EXTP2_NEWFPGA_REG    			0x009E
+#define Wr_EXTP3_NEWFPGA_REG    			0x00A0
+#define Wr_EXTP4_NEWFPGA_REG    			0x00A2
+#define Wr_EXTP5_NEWFPGA_REG    			0x00A4
+#define Wr_EXTP6_NEWFPGA_REG    			0x00A6
+#define Wr_EXTP7_NEWFPGA_REG    			0x00A8
 
-#define     FPGA_FILE_NAME_H		0x0074	
-#define     FPGA_FILE_NAME_M		0x0076
-#define     FPGA_FILE_NAME_L		0x0078
+#define Wr_MOVIE_FUNC_Addr      			0x00FC 
+#define Wr_MOVIE_DSWAP_Addr     			0x00FE
 
-#define     FPGA_FILE_READ_EN		0x007A
-#define     FPGA_STAT_READ  		0x007C
+#define Wr_CPU_DATAL_Reg					0x0002	
+#define Wr_CPU_DATAHr_Reg					0x0004
+#define Wr_CPU_DATAHd_Reg					0x000C	
 
+#define Wr_CPU_ReadOff_Reg					0x0006
+#define Wr_CPU_ReadOn_Reg					0x000E
+#define ExptForCPU_CONTROL					0x001E
 
-#define 	Wr_HFLICKER_COUNT_REG		0x0046
-#define 	Wr_HFLICKER_R1				0x0048
-#define 	Wr_HFLICKER_G1				0x004A
-#define 	Wr_HFLICKER_B1				0x004C
-#define 	Wr_HFLICKER_R2				0x004E
-#define 	Wr_HFLICKER_G2				0x0050
-#define 	Wr_HFLICKER_B2				0x0052
-
-#define 	Wr_FPGA_WE_END_REG    		0x0034
-
-#define 	Wr_COORDINATE_SW			0x0058
-#define 	Wr_COORDINATE_COLOR_R		0x005A 
-#define 	Wr_COORDINATE_COLOR_G		0x0036
-#define 	Wr_COORDINATE_COLOR_B		0x0038
-#define 	Wr_COORDINATE_CONT			0x003A
-#define 	Wr_COORDINATE_X				0x003C
-#define 	Wr_COORDINATE_Y				0x003E
-
-#define 	Wr_DISTANCE_XY				0x0054
-#define 	Wr_WIDTH_SIZE				0x0056
-
-#define 	Wr_DATA_10BIT				0x0044
-
-#define 	Wr_DUAL_BOX_EN				0x0032
-#define 	Wr_DUAL_BOX_COLOR_R		    0x0024 
-#define 	Wr_DUAL_BOX_COLOR_G			0x0026
-#define 	Wr_DUAL_BOX_COLOR_B			0x0028
-#define 	Wr_DUAL_BOX_INDEX			0x002A
-#define 	Wr_DUAL_BOX_X				0x002C
-#define 	Wr_DUAL_BOX_Y				0x002E
+#define Re_CPU_DATAL_Reg					0x0002	
+#define Re_CPU_DATAHr_Reg					0x0004	
+#define Re_CPU_DATAHd_Reg					0x000C	
 
 
-#define 	Wr_CIRCLE_EN			0x00EC
-#define 	Wr_CIRCLE_INDEX			0x00EA
+#define Wr_INTERNAL_RUN_REG    				0x00AA
+#define Wr_PHYSICAL_PATTERN_NUM_REG   		0x00AC
+#define Wr_PATTERN_TYPE_SEL_REG   			0x00AE
+#define Re_INTERNAL_PAT_CON_Reg    			0x00B0
+#define Wr_PHYSICAL_GRAY_LEVEL_REG    		0x00B2
+#define Wr_LVDS_SWAP_REG   					0x00B4
+#define Wr_FPGA_DATA_BIT_REG    			0x00B6
+#define Wr_FPGA_1FrameData_Access    		0x00B8
+
+#define Wr_GRAY_RED_VALUE               	0x006E
+#define Wr_GRAY_GREEN_VALUE             	0x0070
+#define Wr_GRAY_BLUE_VALUE              	0x0072
+
+#define FPGA_FILE_NAME_H					0x0074	
+#define FPGA_FILE_NAME_M					0x0076
+#define FPGA_FILE_NAME_L					0x0078
+
+#define FPGA_FILE_READ_EN					0x007A
+#define FPGA_STAT_READ  					0x007C
+
+
+#define	Wr_HFLICKER_COUNT_REG				0x0046
+#define	Wr_HFLICKER_R1						0x0048
+#define	Wr_HFLICKER_G1						0x004A
+#define	Wr_HFLICKER_B1						0x004C
+#define	Wr_HFLICKER_R2						0x004E
+#define	Wr_HFLICKER_G2						0x0050
+#define	Wr_HFLICKER_B2						0x0052
+
+#define	Wr_FPGA_WE_END_REG    				0x0034
+
+#define	Wr_COORDINATE_SW					0x0058
+#define	Wr_COORDINATE_COLOR_R				0x005A 
+#define	Wr_COORDINATE_COLOR_G				0x0036
+#define	Wr_COORDINATE_COLOR_B				0x0038
+#define	Wr_COORDINATE_CONT					0x003A
+#define	Wr_COORDINATE_X						0x003C
+#define	Wr_COORDINATE_Y						0x003E
+
+#define	Wr_DISTANCE_XY						0x0054
+#define	Wr_WIDTH_SIZE						0x0056
+
+#define	Wr_DATA_10BIT						0x0044
+
+#define	Wr_DUAL_BOX_EN						0x0032
+#define	Wr_DUAL_BOX_COLOR_R		    		0x0024 
+#define	Wr_DUAL_BOX_COLOR_G					0x0026
+#define	Wr_DUAL_BOX_COLOR_B					0x0028
+#define	Wr_DUAL_BOX_INDEX					0x002A
+#define	Wr_DUAL_BOX_X						0x002C
+#define	Wr_DUAL_BOX_Y						0x002E
+
+#define	Wr_CIRCLE_EN						0x00EC
+#define	Wr_CIRCLE_INDEX						0x00EA
 
 
 typedef struct
