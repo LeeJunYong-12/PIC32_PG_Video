@@ -12297,7 +12297,7 @@ void SavePATAndBMP(void)
 	else
 	{
 		ModeInfo.gm_BaseADDR_PAT = (ModeInfo.gm_DDR_INCREMENT * ModeInfo.gm_BMP_NUM) + ModeInfo.gm_BaseADDR_BMP;
-	}		
+	}
 
 	for(i = 0; i < ModeInfo.gm_PAT_NUM; i++)       
 	{

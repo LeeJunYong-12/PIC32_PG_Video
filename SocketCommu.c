@@ -201,14 +201,14 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			printf("m_MODEL_NAME  Para1=%d, Para2=%d \r\n", pPacket->Para1, pPacket->Para2);	
 			GlobalSetting1.gm_MODEL_TYPE=pPacket->Para1;
 			GlobalSetting1.gm_MODEL_NAME=pPacket->Para2;
-			//if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
-			//{
+			if(GlobalSetting1.gm_MODEL_TYPE == m_D99X || GlobalSetting1.gm_MODEL_TYPE == m_X40X)
+			{
 				PMP_WRITE_ONE(Wr_DATA_10BIT, 0x01);	
-			//}
-			//else
-			//{
-				//PMP_WRITE_ONE(Wr_DATA_10BIT, 0x00);	
-			//}
+			}
+			else
+			{
+				PMP_WRITE_ONE(Wr_DATA_10BIT, 0x00);	
+			}
 			
 			AckPackSend(1);
 		}    
@@ -1013,18 +1013,18 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			//image.box2[box_R][box_G][box_B][bg_R][bg_G][bg_B][box_X1][box_Y1][box_X2][box_Y2]
 			PMP_WRITE_ONE(Wr_DUAL_BOX_X, pPacket->DUAL_BOX_X[0]); //[box_X1] // X0
 			PMP_WRITE_ONE(Wr_DUAL_BOX_Y, pPacket->DUAL_BOX_Y[0]); //[box_Y1] // Y0
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BOX_COLOR_R); //[box_R] //BOX Color	
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BOX_COLOR_G); //[box_G]
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BOX_COLOR_B); //[box_B]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BOX_COLOR_R << BIT_SHIFT); //[box_R] //BOX Color	
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BOX_COLOR_G << BIT_SHIFT); //[box_G]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BOX_COLOR_B << BIT_SHIFT); //[box_B]
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 0); //X0,Y0,Box_Color1
 
 			PMP_WRITE_ONE(Wr_DUAL_BOX_X, pPacket->DUAL_BOX_X[1]); //[box_X2]// X1
 			PMP_WRITE_ONE(Wr_DUAL_BOX_Y, pPacket->DUAL_BOX_Y[1]); //[box_Y2]// Y1
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 1); //X1,Y1,Box_Color1
 
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BACK_COLOR_R); //[bg_R]// BackGround Color	
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BACK_COLOR_G);	//[bg_G]
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BACK_COLOR_B); //[bg_B]		
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BACK_COLOR_R << BIT_SHIFT); //[bg_R]// BackGround Color	
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BACK_COLOR_G << BIT_SHIFT);	//[bg_G]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BACK_COLOR_B << BIT_SHIFT); //[bg_B]		
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 4); //Back Ground Color 
 
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box enable
@@ -1040,9 +1040,9 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			//image.box.dual[box_R][box_G][box_B][bg_R][bg_G][bg_B][box1_X1][box1_Y1][box1_X2][box1_Y2][box2_X1][box2_Y1][box2_X2][box2_Y2]
 			PMP_WRITE_ONE(Wr_DUAL_BOX_X, pPacket->DUAL_BOX_X[0]); //[box1_X1] // X0
 			PMP_WRITE_ONE(Wr_DUAL_BOX_Y, pPacket->DUAL_BOX_Y[0]); //[box1_Y1] // Y0
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BOX_COLOR_R); //[box_R] //BOX Color	
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BOX_COLOR_G); //[box_G]
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BOX_COLOR_B); //[box_B]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BOX_COLOR_R << BIT_SHIFT); //[box_R] //BOX Color	
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BOX_COLOR_G << BIT_SHIFT); //[box_G]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BOX_COLOR_B << BIT_SHIFT); //[box_B]
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 0); //X0,Y0,Box_Color1
 
 			PMP_WRITE_ONE(Wr_DUAL_BOX_X, pPacket->DUAL_BOX_X[1]); //[box1_X2]// X1
@@ -1051,18 +1051,18 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 
 			PMP_WRITE_ONE(Wr_DUAL_BOX_X, pPacket->DUAL_BOX_X[2]); //[box2_X1]// X2
 			PMP_WRITE_ONE(Wr_DUAL_BOX_Y, pPacket->DUAL_BOX_Y[2]); //[box2_Y1]// Y2
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BOX_COLOR_R); //[box_R] //BOX Color
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BOX_COLOR_G); //[box_G]
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BOX_COLOR_B); //[box_B]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BOX_COLOR_R << BIT_SHIFT); //[box_R] //BOX Color
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BOX_COLOR_G << BIT_SHIFT); //[box_G]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BOX_COLOR_B << BIT_SHIFT); //[box_B]
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 2); //X2,Y2,Box_Color2
 			
 			PMP_WRITE_ONE(Wr_DUAL_BOX_X, pPacket->DUAL_BOX_X[3]); //[box2_X2]// X3
 			PMP_WRITE_ONE(Wr_DUAL_BOX_Y, pPacket->DUAL_BOX_Y[3]); //[box2_Y2]// Y3
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 3); //X3,Y3,Box_Color2
 
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BACK_COLOR_R); //[bg_R]// BackGround Color	
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BACK_COLOR_G);	//[bg_G]
-			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BACK_COLOR_B); //[bg_B]		
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_R, pPacket->DUAL_BACK_COLOR_R << BIT_SHIFT); //[bg_R]// BackGround Color	
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_G, pPacket->DUAL_BACK_COLOR_G << BIT_SHIFT);	//[bg_G]
+			PMP_WRITE_ONE(Wr_DUAL_BOX_COLOR_B, pPacket->DUAL_BACK_COLOR_B << BIT_SHIFT); //[bg_B]		
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 4); //Back Ground Color 
 
 			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box enable
@@ -1091,7 +1091,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			for(k=0; k<18; k++)
 			{
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+1)); 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k]); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k] << BIT_SHIFT); 
 				printf("%d, ",pPacket->CIRCLE_COLOR[k]); 
 			}
 			printf("\r\n");
@@ -1174,7 +1174,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			for(k=32; k<47; k++) // 0x20 ~ 0x2F
 			{
 				PMP_WRITE_ONE(Wr_CIRCLE_INDEX, (k+1)); 
-				PMP_WRITE_ONE(Wr_CIRCLE_EN, pPacket->CIRCLE_COLOR[k-32]); 
+				PMP_WRITE_ONE(Wr_CIRCLE_EN, (pPacket->CIRCLE_COLOR[k-32]) << BIT_SHIFT); 
 				printf("%d, ",pPacket->CIRCLE_COLOR[k-32]); 
 			}
 			printf("\r\n");
@@ -1243,18 +1243,13 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 
 		PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box Num	
 		PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 0);	 //Box disable
-
-		FPGA_Wr_PATTERN_TYPE_SEL_REG(PAT_TYPE);
-		FPGA_Wr_PHYSICAL_PATTERN_NUM(684);
-		New_GRAY_LEVEL_Control(255, 255, 255);
-		PMP_WRITE_ONE(Wr_DISPLAY_START, 1);
 		
 		if(strcmp(pPacket->FunName, "image.stripe.box") == 0)
 	    {												
 			if(pPacket->BOX_RGB[0] >= 0 && pPacket->BOX_RGB[0] <= 255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[0] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << BIT_SHIFT;
 			
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x00);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb);
@@ -1262,7 +1257,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else if(pPacket->BOX_RGB[0] >= 1000 && pPacket->BOX_RGB[0] <= 1255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[0] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << BIT_SHIFT;
 				
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x00);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1270,7 +1265,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else if(pPacket->BOX_RGB[0] >= 2000 && pPacket->BOX_RGB[0] <= 2255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[0] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[0] % 1000) & 0xFF) << BIT_SHIFT;
 				
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x00);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1281,7 +1276,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			if(pPacket->BOX_RGB[1] >= 0 && pPacket->BOX_RGB[1] <= 255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[1] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << BIT_SHIFT;
 			
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x01);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1289,7 +1284,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else if(pPacket->BOX_RGB[1] >= 1000 && pPacket->BOX_RGB[1] <= 1255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[1] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << BIT_SHIFT;
 				
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x01);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1297,7 +1292,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else if(pPacket->BOX_RGB[1] >= 2000 && pPacket->BOX_RGB[1] <= 2255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[1] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[1] % 1000) & 0xFF) << BIT_SHIFT;
 				
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x01);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1308,7 +1303,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			if(pPacket->BOX_RGB[2] >= 0 && pPacket->BOX_RGB[2] <= 255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[2] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << BIT_SHIFT;
 			
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x02);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1316,7 +1311,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else if(pPacket->BOX_RGB[2] >= 1000 && pPacket->BOX_RGB[2] <= 1255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[2] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << BIT_SHIFT;
 				
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x02);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1324,7 +1319,7 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else if(pPacket->BOX_RGB[2] >= 2000 && pPacket->BOX_RGB[2] <= 2255)
 			{
 				box_rgb |= (pPacket->BOX_RGB[2] / 1000) << 10;
-				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << 2;
+				box_rgb |= ((pPacket->BOX_RGB[2] % 1000) & 0xFF) << BIT_SHIFT;
 				
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x02);
 				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, box_rgb); 
@@ -1344,13 +1339,13 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			else
 			{
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x03);
-				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[0] & 0x3FF) << 2); 
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[0] & 0x3FF) << BIT_SHIFT); 
 
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x04);
-				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[1] & 0x3FF) << 2); 
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[1] & 0x3FF) << BIT_SHIFT); 
 
 				PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x05);
-				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[2] & 0x3FF) << 2); 
+				PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->BG_RGB[2] & 0x3FF) << BIT_SHIFT); 
 			}
 			
 			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x06);
@@ -1368,8 +1363,14 @@ void ExeScriptCommand(unsigned char* pBuff,  unsigned int nLen)
 			PMP_WRITE_ONE(STRIPE_BOX_INDEX_Addr, 0x0A);
 			PMP_WRITE_ONE(STRIPE_BOX_DATA_Addr, (pPacket->EVEN_ODD & 0x01)); 
 
-			PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box enable
-			PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 1);    //Box Num   (b0000 0001)
+			//PMP_WRITE_ONE(Wr_DUAL_BOX_INDEX, 5); //Box enable
+			//PMP_WRITE_ONE(Wr_DUAL_BOX_EN, 1);    //Box Num   (b0000 0001)
+
+			// for PTN Enable
+			//FPGA_Wr_PATTERN_TYPE_SEL_REG(PAT_TYPE);
+			//FPGA_Wr_PHYSICAL_PATTERN_NUM(104);
+			//New_GRAY_LEVEL_Control(255, 255, 255);
+			//PMP_WRITE_ONE(Wr_DISPLAY_START, 1);
 	   	}
 		AckPackSend(1);
 	}
@@ -2273,7 +2274,9 @@ void Test_Video_mode(unsigned int p1, unsigned int p2, unsigned int p3)
 
 void VersionSend(void)
 {
-	unsigned char appVersioin[4] = {26, 7, 1, 0}; 		// Add stripe box pattern
+	unsigned char appVersioin[4] = {26, 7, 20, 0}; 		// SDCARD BMP test
+	//unsigned char appVersioin[4] = {26, 7, 20, 0}; 	// 8bit -> 10bit test
+	//unsigned char appVersioin[4] = {26, 7, 1, 0}; 	// Add stripe box pattern
     //unsigned char appVersioin[4] = {26, 2, 24, 0}; 	// flash erase & write verify change
     
 	uint8_t szVersion[20] = {"Video Board"};

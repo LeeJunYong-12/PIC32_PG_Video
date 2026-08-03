@@ -219,6 +219,7 @@ typedef struct {
 
 // F/W => Window
 #define MAX_DOWN_BMP_SIZE   256 
+#define BIT_SHIFT	2
 
 // E_BMP_LIST_PACKET = 80 
 typedef struct { 
